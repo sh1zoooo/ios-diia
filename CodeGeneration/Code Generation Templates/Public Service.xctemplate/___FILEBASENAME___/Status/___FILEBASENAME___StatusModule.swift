@@ -1,3 +1,4 @@
+//___FILEHEADER___
 
 import UIKit
 import DiiaMVPModule
@@ -10,16 +11,13 @@ final class ___FILEBASENAMEASIDENTIFIER___: BaseModule {
     
     init(
         applicationId: String,
-        contextMenuProvider: ContextMenuProviderProtocol,
         flowCoordinator: FlowCoordinatorProtocol
     ) {
         view = ConstructorViewController()
         presenter = ___VARIABLE_productName:identifier___StatusPresenter(
             applicationId: applicationId,
             view: view,
-            flowCoordinator: flowCoordinator,
-            contextMenuProvider: contextMenuProvider
-        )
+            flowCoordinator: flowCoordinator)
         view.presenter = presenter
     }
     

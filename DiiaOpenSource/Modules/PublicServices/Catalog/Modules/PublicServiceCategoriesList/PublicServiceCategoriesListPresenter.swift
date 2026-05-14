@@ -30,7 +30,7 @@ class PublicServiceCategoriesModel {
     }
 }
 
-protocol PublicServiceCategoriesListAction: BasePresenter, DSConsructorEventHandler {
+protocol PublicServiceCategoriesListAction: BasePresenter, DSConstructorEventHandler {
     func numberOfItems(withChips: Bool) -> Int
     func getActiveSections() -> [PublicServiceSection]
     func itemAt(index: Int, withChip: Bool) -> PublicServiceCategoryViewModel?
@@ -65,20 +65,21 @@ final class PublicServiceCategoriesListPresenter: NSObject, PublicServiceCategor
     func configureView() {
         ReachabilityHelper.shared
             .statusSignal
-            .observeNext { [weak self] isReachable in
+            .observe(observer: self, triggerNow: false) { [weak self] isReachable in
                 self?.onNetworkStatus(isReachable: isReachable)
             }
-            .dispose(in: disposedBag)
     }
 
     private func onNetworkStatus(isReachable: Bool) {
-        if isReachable && numberOfItems() == 0 {
-            updateServices()
+        if isReachable {
+            if numberOfItems() == 0 {
+                updateServices()
+            }
+            ReachabilityHelper.shared.statusSignal.removeObserver(observer: self)
         }
     }
 
     // MARK: - PublicServiceCategoriesListAction
-    
     func handleEvent(event: ConstructorItemEvent) {
         let actionModel = event.actionParameters()
         switch actionModel?.type {

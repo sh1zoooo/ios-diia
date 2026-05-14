@@ -1,29 +1,26 @@
+//___FILEHEADER___
 
 import Foundation
 import DiiaNetwork
 import DiiaCommonTypes
 
 enum ___FILEBASENAMEASIDENTIFIER___: CommonService {
-    case getOnboarding
-    case getMainScreen
-    case getStatusScreen(applicationId: String)
-    
+    case mainScreen
+    case statusScreen(applicationId: String)
+
     var method: HTTPMethod {
         switch self {
-        case .getOnboarding,
-             .getMainScreen,
-             .getStatusScreen:
+        case .mainScreen,
+            .statusScreen:
             return .get
         }
     }
     
     var path: String {
         switch self {
-        case .getOnboarding:
-            return "v1/public-service/___VARIABLE_publicServiceCode:bundleIdentifier___/onboarding"
-        case .getMainScreen:
+        case .mainScreen:
             return "v1/public-service/___VARIABLE_publicServiceCode:bundleIdentifier___/home"
-        case .getStatusScreen(let applicationId):
+        case .statusScreen(let applicationId):
             return "v1/public-service/___VARIABLE_publicServiceCode:bundleIdentifier___/\(applicationId)"
         }
     }
@@ -36,13 +33,6 @@ enum ___FILEBASENAMEASIDENTIFIER___: CommonService {
     }
     
     var analyticsName: String {
-        switch self {
-        case .getOnboarding:
-            return NetworkActionKey.___VARIABLE_publicServiceName:identifier___GetOnboarding.rawValue
-        case .getMainScreen:
-            return NetworkActionKey.___VARIABLE_publicServiceName:identifier___GetMainScreen.rawValue
-        case .getStatusScreen:
-            return NetworkActionKey.___VARIABLE_publicServiceName:identifier___GetStatusScreen.rawValue
-        }
+        return ""
     }
 }

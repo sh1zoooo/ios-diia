@@ -18,11 +18,6 @@
 		3329AF7B2B2A1F1F004B8517 /* EnterPinCodeViewModel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329AF772B2A1F1F004B8517 /* EnterPinCodeViewModel+Extension.swift */; };
 		3329AF7E2B2A5201004B8517 /* AuthorizationApiClient+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329AF7D2B2A5201004B8517 /* AuthorizationApiClient+Extension.swift */; };
 		33825E322B4BEF9F00C5801A /* DriverLicenseViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33825E312B4BEF9F00C5801A /* DriverLicenseViewModelFactory.swift */; };
-		339AE86A2B5E6C6100C21112 /* DiiaUIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE8692B5E6C6100C21112 /* DiiaUIComponents */; };
-		339AE86C2B5E6C8500C21112 /* DiiaMVPModule in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE86B2B5E6C8500C21112 /* DiiaMVPModule */; };
-		339AE86E2B5E6C8500C21112 /* DiiaNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE86D2B5E6C8500C21112 /* DiiaNetwork */; };
-		339AE8702B5E6CA200C21112 /* DiiaCommonTypes in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE86F2B5E6CA200C21112 /* DiiaCommonTypes */; };
-		339AE8722B5E6CC000C21112 /* DiiaCommonServices in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE8712B5E6CC000C21112 /* DiiaCommonServices */; };
 		339AE8742B5E6CCF00C21112 /* DiiaPublicServices in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE8732B5E6CCF00C21112 /* DiiaPublicServices */; };
 		339AE8782B5E6CE700C21112 /* DiiaDocuments in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE8772B5E6CE700C21112 /* DiiaDocuments */; };
 		339AE87A2B5E6CE700C21112 /* DiiaDocumentsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 339AE8792B5E6CE700C21112 /* DiiaDocumentsCore */; };
@@ -142,6 +137,7 @@
 		4940E5422EF99F90002471A1 /* DocumentsDriverLicensePushRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4940E5412EF99F7F002471A1 /* DocumentsDriverLicensePushRouter.swift */; };
 		4940E5442EF99FC2002471A1 /* PushNotificationPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4940E5432EF99FC2002471A1 /* PushNotificationPayload.swift */; };
 		4940E5462EF9A0B6002471A1 /* CriminalRecordCertificatePushRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4940E5452EF9A0B2002471A1 /* CriminalRecordCertificatePushRouter.swift */; };
+		4957051C2FACCAA900041E25 /* PublicServiceFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4957051B2FACCA9E00041E25 /* PublicServiceFlowCoordinator.swift */; };
 		4A63C8102E9D21F60019BE7E /* ServiceActiveTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A63C7F22E9D21F60019BE7E /* ServiceActiveTableCell.xib */; };
 		4A63C8112E9D21F60019BE7E /* ServiceInactiveTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A63C7F42E9D21F60019BE7E /* ServiceInactiveTableCell.xib */; };
 		4A63C8122E9D21F60019BE7E /* PublicServiceSearchTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A63C8042E9D21F60019BE7E /* PublicServiceSearchTableCell.xib */; };
@@ -233,8 +229,6 @@
 		7BE199562B16E753008C9FAC /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199552B16E753008C9FAC /* LocalizationHelper.swift */; };
 		7BE199642B17C230008C9FAC /* FaqOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199632B17C230008C9FAC /* FaqOpener.swift */; };
 		7BE199672B17C319008C9FAC /* DriverReplacementStubModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199662B17C319008C9FAC /* DriverReplacementStubModule.swift */; };
-		9487B53F2B76594800571A1D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 9487B53E2B76594800571A1D /* Alamofire */; };
-		9487B5422B765B8600571A1D /* ReactiveKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9487B5412B765B8600571A1D /* ReactiveKit */; };
 		CB4209042E9D24EE00266703 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = CB4209032E9D24EE00266703 /* Collections */; };
 		CB42090B2E9D272C00266703 /* LinkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB42090A2E9D272C00266703 /* LinkResponse.swift */; };
 /* End PBXBuildFile section */
@@ -365,6 +359,7 @@
 		4940E5412EF99F7F002471A1 /* DocumentsDriverLicensePushRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsDriverLicensePushRouter.swift; sourceTree = "<group>"; };
 		4940E5432EF99FC2002471A1 /* PushNotificationPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationPayload.swift; sourceTree = "<group>"; };
 		4940E5452EF9A0B2002471A1 /* CriminalRecordCertificatePushRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CriminalRecordCertificatePushRouter.swift; sourceTree = "<group>"; };
+		4957051B2FACCA9E00041E25 /* PublicServiceFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceFlowCoordinator.swift; sourceTree = "<group>"; };
 		4A63C7DF2E9D21F60019BE7E /* PublicServiceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceResponse.swift; sourceTree = "<group>"; };
 		4A63C7E02E9D21F60019BE7E /* PublicServiceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceSection.swift; sourceTree = "<group>"; };
 		4A63C7E22E9D21F60019BE7E /* PublicServiceOpenerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceOpenerProtocol.swift; sourceTree = "<group>"; };
@@ -462,21 +457,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9487B53F2B76594800571A1D /* Alamofire in Frameworks */,
 				339AE8802B5E6CFE00C21112 /* DiiaAuthorizationPinCode in Frameworks */,
 				42F93A4029FFD11B0072DDC1 /* RNCryptor in Frameworks */,
 				339AE87A2B5E6CE700C21112 /* DiiaDocumentsCore in Frameworks */,
-				339AE8722B5E6CC000C21112 /* DiiaCommonServices in Frameworks */,
 				33C550412B48B6A200E100CD /* Lottie in Frameworks */,
 				CB4209042E9D24EE00266703 /* Collections in Frameworks */,
 				7B0AACE62B8B86E1007E00B8 /* FirebaseAnalytics in Frameworks */,
-				9487B5422B765B8600571A1D /* ReactiveKit in Frameworks */,
 				339AE8782B5E6CE700C21112 /* DiiaDocuments in Frameworks */,
 				339AE87C2B5E6CFE00C21112 /* DiiaAuthorization in Frameworks */,
-				339AE86E2B5E6C8500C21112 /* DiiaNetwork in Frameworks */,
-				339AE8702B5E6CA200C21112 /* DiiaCommonTypes in Frameworks */,
-				339AE86C2B5E6C8500C21112 /* DiiaMVPModule in Frameworks */,
-				339AE86A2B5E6C6100C21112 /* DiiaUIComponents in Frameworks */,
 				7B0AACE82B8B86EA007E00B8 /* FirebaseCrashlytics in Frameworks */,
 				339AE8742B5E6CCF00C21112 /* DiiaPublicServices in Frameworks */,
 				339AE87E2B5E6CFE00C21112 /* DiiaAuthorizationMethods in Frameworks */,
@@ -1350,6 +1338,7 @@
 			children = (
 				7BE198F72B151127008C9FAC /* BaseContextMenuProvider.swift */,
 				7BE198F92B1511BA008C9FAC /* RatingServiceOpener.swift */,
+				4957051B2FACCA9E00041E25 /* PublicServiceFlowCoordinator.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -1487,19 +1476,12 @@
 			packageProductDependencies = (
 				42F93A3F29FFD11B0072DDC1 /* RNCryptor */,
 				33C550402B48B6A200E100CD /* Lottie */,
-				339AE8692B5E6C6100C21112 /* DiiaUIComponents */,
-				339AE86B2B5E6C8500C21112 /* DiiaMVPModule */,
-				339AE86D2B5E6C8500C21112 /* DiiaNetwork */,
-				339AE86F2B5E6CA200C21112 /* DiiaCommonTypes */,
-				339AE8712B5E6CC000C21112 /* DiiaCommonServices */,
 				339AE8732B5E6CCF00C21112 /* DiiaPublicServices */,
 				339AE8772B5E6CE700C21112 /* DiiaDocuments */,
 				339AE8792B5E6CE700C21112 /* DiiaDocumentsCore */,
 				339AE87B2B5E6CFE00C21112 /* DiiaAuthorization */,
 				339AE87D2B5E6CFE00C21112 /* DiiaAuthorizationMethods */,
 				339AE87F2B5E6CFE00C21112 /* DiiaAuthorizationPinCode */,
-				9487B53E2B76594800571A1D /* Alamofire */,
-				9487B5412B765B8600571A1D /* ReactiveKit */,
 				7B0AACE52B8B86E1007E00B8 /* FirebaseAnalytics */,
 				7B0AACE72B8B86EA007E00B8 /* FirebaseCrashlytics */,
 				CB4209032E9D24EE00266703 /* Collections */,
@@ -1534,17 +1516,10 @@
 			mainGroup = 42F9229629FBDC820072DDC1;
 			packageReferences = (
 				42F93A3E29FFD11B0072DDC1 /* XCRemoteSwiftPackageReference "RNCryptor" */,
-				42F93A432A0104AA0072DDC1 /* XCRemoteSwiftPackageReference "ios-mvpmodule" */,
-				42F93A462A0104D50072DDC1 /* XCRemoteSwiftPackageReference "ios-network" */,
-				7B65C5D22B0367830018D510 /* XCRemoteSwiftPackageReference "ios-commontypes" */,
-				7B65C5D32B0368E50018D510 /* XCRemoteSwiftPackageReference "ios-uicomponents" */,
-				7B65C5D42B03699A0018D510 /* XCRemoteSwiftPackageReference "ios-commonservices" */,
 				7B65C5D52B0369CE0018D510 /* XCRemoteSwiftPackageReference "ios-publicservices" */,
 				7BE198FD2B16D851008C9FAC /* XCRemoteSwiftPackageReference "ios-documents" */,
 				33B035282B29BBBB00374227 /* XCRemoteSwiftPackageReference "ios-authorization" */,
 				33C5503F2B48B6A200E100CD /* XCRemoteSwiftPackageReference "lottie-spm" */,
-				9487B53D2B76594800571A1D /* XCRemoteSwiftPackageReference "Alamofire" */,
-				9487B5402B765B8600571A1D /* XCRemoteSwiftPackageReference "ReactiveKit" */,
 				7B0AACE42B8B8518007E00B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				CB4209022E9D24EE00266703 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
@@ -1631,6 +1606,7 @@
 				42F9337129FBF7D30072DDC1 /* StartAuthorizationViewController.swift in Sources */,
 				4940E5462EF9A0B6002471A1 /* CriminalRecordCertificatePushRouter.swift in Sources */,
 				42F931DE29FBF7D20072DDC1 /* SplashScreenModule.swift in Sources */,
+				4957051C2FACCAA900041E25 /* PublicServiceFlowCoordinator.swift in Sources */,
 				7B7693CA2B7AE63E0007A89F /* SharingDocsAPIClient.swift in Sources */,
 				42F9242E29FBF61B0072DDC1 /* RoundButton.swift in Sources */,
 				42F931DF29FBF7D20072DDC1 /* SplashScreenViewController.swift in Sources */,
@@ -1959,7 +1935,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.25.0;
+				MARKETING_VERSION = 4.30.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ua.gov.diia.opensource.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1994,7 +1970,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.25.0;
+				MARKETING_VERSION = 4.30.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ua.gov.diia.opensource.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2055,52 +2031,12 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		42F93A432A0104AA0072DDC1 /* XCRemoteSwiftPackageReference "ios-mvpmodule" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/diia-open-source/ios-mvpmodule.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		42F93A462A0104D50072DDC1 /* XCRemoteSwiftPackageReference "ios-network" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/diia-open-source/ios-network.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		7B0AACE42B8B8518007E00B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 10.20.0;
-			};
-		};
-		7B65C5D22B0367830018D510 /* XCRemoteSwiftPackageReference "ios-commontypes" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/diia-open-source/ios-commontypes.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		7B65C5D32B0368E50018D510 /* XCRemoteSwiftPackageReference "ios-uicomponents" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/diia-open-source/ios-uicomponents.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		7B65C5D42B03699A0018D510 /* XCRemoteSwiftPackageReference "ios-commonservices" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/diia-open-source/ios-commonservices.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.0;
 			};
 		};
 		7B65C5D52B0369CE0018D510 /* XCRemoteSwiftPackageReference "ios-publicservices" */ = {
@@ -2119,22 +2055,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		9487B53D2B76594800571A1D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.4.3;
-			};
-		};
-		9487B5402B765B8600571A1D /* XCRemoteSwiftPackageReference "ReactiveKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/DeclarativeHub/ReactiveKit.git";
-			requirement = {
-				kind = exactVersion;
-				version = 3.16.2;
-			};
-		};
 		CB4209022E9D24EE00266703 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections.git";
@@ -2146,31 +2066,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		339AE8692B5E6C6100C21112 /* DiiaUIComponents */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7B65C5D32B0368E50018D510 /* XCRemoteSwiftPackageReference "ios-uicomponents" */;
-			productName = DiiaUIComponents;
-		};
-		339AE86B2B5E6C8500C21112 /* DiiaMVPModule */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42F93A432A0104AA0072DDC1 /* XCRemoteSwiftPackageReference "ios-mvpmodule" */;
-			productName = DiiaMVPModule;
-		};
-		339AE86D2B5E6C8500C21112 /* DiiaNetwork */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42F93A462A0104D50072DDC1 /* XCRemoteSwiftPackageReference "ios-network" */;
-			productName = DiiaNetwork;
-		};
-		339AE86F2B5E6CA200C21112 /* DiiaCommonTypes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7B65C5D22B0367830018D510 /* XCRemoteSwiftPackageReference "ios-commontypes" */;
-			productName = DiiaCommonTypes;
-		};
-		339AE8712B5E6CC000C21112 /* DiiaCommonServices */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7B65C5D42B03699A0018D510 /* XCRemoteSwiftPackageReference "ios-commonservices" */;
-			productName = DiiaCommonServices;
-		};
 		339AE8732B5E6CCF00C21112 /* DiiaPublicServices */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7B65C5D52B0369CE0018D510 /* XCRemoteSwiftPackageReference "ios-publicservices" */;
@@ -2220,16 +2115,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7B0AACE42B8B8518007E00B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
-		};
-		9487B53E2B76594800571A1D /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9487B53D2B76594800571A1D /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		9487B5412B765B8600571A1D /* ReactiveKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9487B5402B765B8600571A1D /* XCRemoteSwiftPackageReference "ReactiveKit" */;
-			productName = ReactiveKit;
 		};
 		CB4209032E9D24EE00266703 /* Collections */ = {
 			isa = XCSwiftPackageProductDependency;

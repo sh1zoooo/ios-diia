@@ -18,8 +18,9 @@ class DocumentReorderingService: DocumentReorderingServiceProtocol {
         
         ReachabilityHelper.shared
             .statusSignal
-            .observeNext { [weak self] isReachable in if isReachable { self?.synchronizeIfNeeded() } }
-            .dispose(in: bag)
+            .observe(observer: self) { [weak self] isReachable in
+                if isReachable { self?.synchronizeIfNeeded() }
+            }
     }
     
     // MARK: - DocumentReorderingServiceProtocol

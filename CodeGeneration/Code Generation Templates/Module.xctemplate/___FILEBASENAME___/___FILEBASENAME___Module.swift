@@ -1,3 +1,4 @@
+//___FILEHEADER___
 
 import UIKit
 import DiiaMVPModule
@@ -9,14 +10,12 @@ final class ___FILEBASENAMEASIDENTIFIER___: BaseModule {
     private let presenter: ___VARIABLE_productName:identifier___Presenter
 
     init(
-        contextMenuProvider: ContextMenuProviderProtocol,
         flowCoordinator: FlowCoordinatorProtocol
     ) {
         view = ConstructorViewController()
         presenter = ___VARIABLE_productName:identifier___Presenter(
             view: view,
-            flowCoordinator: flowCoordinator,
-            contextMenuProvider: contextMenuProvider
+            flowCoordinator: flowCoordinator
         )
         view.presenter = presenter
     }

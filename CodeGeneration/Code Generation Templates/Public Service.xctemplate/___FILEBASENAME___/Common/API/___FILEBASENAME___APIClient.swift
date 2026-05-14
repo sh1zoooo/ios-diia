@@ -1,27 +1,21 @@
+//___FILEHEADER___
 
-import ReactiveKit
 import DiiaNetwork
 import DiiaCommonTypes
-import DiiaUIComponents
 import DiiaCommonServices
+import DiiaUIComponents
 
 protocol ___FILEBASENAMEASIDENTIFIER___Protocol {
-    func getOnboarding() -> Signal<DSConstructorModel, NetworkError>
-    func getMainScreen() -> Signal<DSConstructorModel, NetworkError>
-    func getStatusScreen(applicationId: String) -> Signal<DSConstructorModel, NetworkError>
+    func mainScreen(completion: @escaping (Result<DSConstructorModel, NetworkError>) -> Void)
+    func statusScreen(applicationId: String, completion: @escaping (Result<DSConstructorModel, NetworkError>) -> Void)
 }
 
-class ___FILEBASENAMEASIDENTIFIER___: ApiClient<___VARIABLE_productName:identifier___API>, ___FILEBASENAMEASIDENTIFIER___Protocol {
-
-    func getOnboarding() -> Signal<DSConstructorModel, NetworkError> {
-        return request(.getOnboarding)
+final class ___FILEBASENAMEASIDENTIFIER___: ApiClient<___VARIABLE_productName:identifier___API>, ___FILEBASENAMEASIDENTIFIER___Protocol {
+    func mainScreen(completion: @escaping (Result<DSConstructorModel, NetworkError>) -> Void) {
+        return request(.mainScreen, completion: completion)
     }
     
-    func getMainScreen() -> Signal<DSConstructorModel, NetworkError> {
-        return request(.getMainScreen)
-    }
-    
-    func getStatusScreen(applicationId: String) -> Signal<DSConstructorModel, NetworkError> {
-        return request(.getStatusScreen(applicationId: applicationId))
+    func statusScreen(applicationId: String, completion: @escaping (Result<DSConstructorModel, NetworkError>) -> Void) {
+        return request(.statusScreen(applicationId: applicationId), completion: completion)
     }
 }

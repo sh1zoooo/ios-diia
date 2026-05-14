@@ -5,9 +5,13 @@ final class DSImageNameResolver: DSImageNameProvider {
     
     static let instance = DSImageNameResolver()
     
-    func imageForCode(imageCode: String?) -> UIImage? {
-        guard let imageCode = imageCode else { return nil }
-        return UIImage(named: "DS_" + imageCode) ?? UIImage(named: "ds_" + imageCode) ?? R.image.ds_placeholder.image
+    public func imageForCode(imageCode: String, placeholder: UIImage?) -> UIImage? {
+        return UIImage(named: "DS_" + imageCode) ?? placeholder
+    }
+    
+    public func imageForCode(imageCode: String?) -> UIImage? {
+        guard let imageCode else { return nil }
+        return imageForCode(imageCode: imageCode, placeholder: R.image.ds_placeholder.image)
     }
     
     func imageNameForCode(imageCode: String) -> String {

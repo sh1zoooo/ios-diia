@@ -1,5 +1,5 @@
 {
-  "originHash" : "a7efc3095cc442752ff662d3fb2b414eb4c55bfbcdc50cb3e85401dcc2c77dbf",
+  "originHash" : "2582388e18960fa2c68a148060ffcbca474b77ccfe2f8897930bdbdf166ba29a",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire.git",
       "state" : {
-        "revision" : "f96b619bcb2383b43d898402283924b80e2c4bae",
-        "version" : "5.4.3"
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-authorization.git",
       "state" : {
-        "revision" : "af2497992f278a2fe1cad7a21641d7a988403bbf",
-        "version" : "1.0.19"
+        "revision" : "e2add550fd8020d852595886dc8c322bb519873e",
+        "version" : "1.0.20"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-commonservices.git",
       "state" : {
-        "revision" : "bc7d34c25c3ce8a6596568438cf36b695d53714e",
-        "version" : "1.0.14"
+        "revision" : "7a2936cf8f055b1bced720b1808152fcc3e20567",
+        "version" : "1.0.16"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-commontypes.git",
       "state" : {
-        "revision" : "5c39a33bd2d8453b1a4dbaefa8d85bcdd85d8fde",
-        "version" : "1.0.21"
+        "revision" : "11524b3b54ee9415648e06c57284bba189715c39",
+        "version" : "1.0.23"
       }
     },
     {
@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-documents.git",
       "state" : {
-        "revision" : "2516b4e1651e10af88f16fd3ce02141839ddb6cd",
-        "version" : "1.0.20"
+        "revision" : "4aa3323d90404547b933722d0eb67255259364f7",
+        "version" : "1.0.22"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-network.git",
       "state" : {
-        "revision" : "e64e05aac4eda9e40331bc94110545ea585de39c",
-        "version" : "1.0.13"
+        "revision" : "784169bea58b292dd6be34d127a769f07c3a7c24",
+        "version" : "1.0.14"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-publicservices.git",
       "state" : {
-        "revision" : "ada60f04ff72debdf45f39cdeaa73daa6bddf0fc",
-        "version" : "1.0.13"
+        "revision" : "fbf5dcf6e92573b463ed590cb19ecd0095d30c55",
+        "version" : "1.0.14"
       }
     },
     {
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-uicomponents.git",
       "state" : {
-        "revision" : "82a0c9f9f264d43ee77e522f3eb97fda6dd806ed",
-        "version" : "1.0.19"
+        "revision" : "b9b2e08e790a17c6ab63d98ae34dfa6c991f8701",
+        "version" : "1.0.26"
       }
     },
     {
@@ -213,8 +213,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DeclarativeHub/ReactiveKit.git",
       "state" : {
-        "revision" : "ca6619a7752f9e475fc51b8c2b6db82e66964823",
-        "version" : "3.16.2"
+        "revision" : "0e553b1af3bc3b6932fa2b0207b11244ba69c1db",
+        "version" : "3.16.4"
       }
     },
     {
@@ -231,8 +231,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
-        "revision" : "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
-        "version" : "1.3.0"
+        "revision" : "03cc312c2c933ed87abace34044a5dff7a3117c1",
+        "version" : "1.5.0"
       }
     },
     {
@@ -240,8 +240,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "c169a5744230951031770e27e475ff6eefe51f9d",
-        "version" : "1.33.3"
+        "revision" : "81558271e243f8f47dfe8e9fdd55f3c2b5413f68",
+        "version" : "1.37.0"
       }
     },
     {

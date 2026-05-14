@@ -173,9 +173,12 @@ extension PublicServiceCategoriesListViewController: UICollectionViewDataSource 
                   let halvedModel = presenter.getNewsData() else {
                 return UICollectionViewCell()
             }
-            let view = DSHalvedCardCarouselBuilder().makeView(from: halvedModel,
-                                                              eventHandler: presenter.handleEvent(event:))
-            genericCell.configure(with: view)
+            let view = DSHalvedCardCarouselBuilder().makeView(
+                from: halvedModel,
+                eventHandler: { [weak self] event in
+                    self?.presenter.handleEvent(event: event)
+                })
+                genericCell.configure(with: view)
             return genericCell
         case .publicServices, .specialServices:
             guard let vm = presenter.itemAt(index: indexPath.item,

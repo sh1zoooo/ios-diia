@@ -111,14 +111,12 @@ final class FeedPresenter: FeedAction {
     private func setupObservations() {
         ReachabilityHelper.shared
             .statusSignal
-            .dropFirst(1)
-            .observeNext { [weak self] isReachable in
+            .observe(observer: self, triggerNow: false) { [weak self] isReachable in
                 self?.setNetworkStatus(isReachable: isReachable)
                 if isReachable {
                     self?.updateIfNeeded()
                 }
             }
-            .dispose(in: bag)
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateIfNeeded), name: UIApplication.didBecomeActiveNotification, object: nil)
     }

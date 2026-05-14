@@ -7,25 +7,33 @@ import DiiaUIComponents
 import DiiaCommonTypes
 import DiiaCommonServices
 
-final class ___FILEBASENAMEASIDENTIFIER___: ConstructorModalScreenPresenter {
+final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
     // MARK: - Properties
-    unowned var view: ConstructorModalScreenViewProtocol
+    unowned var view: ConstructorScreenViewProtocol
+    
+    private let apiClient: ___VARIABLE_productName:identifier___APIClientProtocol
+    private let flowCoordinator: FlowCoordinatorProtocol
 
-//    private let apiClient: ApiClient
-
-    private var didRetry = false
-
+    private let applicationId: String
+    
     // MARK: - Init
-    init(view: ConstructorModalScreenViewProtocol) {
+    init(
+        applicationId: String,
+        view: ConstructorScreenViewProtocol,
+        flowCoordinator: FlowCoordinatorProtocol,
+        apiClient: ___VARIABLE_productName:identifier___APIClientProtocol = ___VARIABLE_productName:identifier___APIClient()
+    ) {
+        self.applicationId = applicationId
         self.view = view
-//        self.apiClient = APIClient()
+        self.flowCoordinator = flowCoordinator
+        self.apiClient = apiClient
     }
     
     // MARK: - Public Methods
     func configureView() {
         fetchScreen()
     }
-    
+
     func handleEvent(event: ConstructorItemEvent) {
         switch event {
         case .inputChanged:
@@ -39,23 +47,28 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorModalScreenPresenter {
     // MARK: - Private Methods
     // MARK: - API Methods
     private func fetchScreen() {
-//        view.setLoadingState(.loading)
-//        apiClient.getScreen { [weak self] result in
-//            guard let self else { return }
-//            self.view.setLoadingState(.ready)
-//            switch result {
-//            case .success(let response):
-//                self.didRetry = false
-//                self.processResponse(response)
-//            case .failure(let error):
-//                self.handleError(error: error) {[weak self] in
-//                    self?.fetchScreen()
-//                }
-//            }
-//        }
+        view.setInnerTridentLoading(.loading)
+
+        apiClient.statusScreen(applicationId: applicationId) { [weak self] result in
+            self?.view.setInnerTridentLoading(.ready)
+
+            switch result {
+            case let .success(response):
+                self?.processFetchScreenResponse(response)
+            case let.failure(error):
+                self?.handleError(error: error) {
+                    self?.fetchScreen()
+                }
+            }
+        }
     }
     
-    // MARK: - Private Methods
+    private func processFetchScreenResponse(_ response: DSConstructorModel) {
+        view.configure(model: response)
+        handleAlertIfNeeded(alert: response.template)
+    }
+
+    // MARK: - Handlers
     private func actionTapped(action: DSActionParameter, statefullHandler: StatefullViewProtocol?) {
         switch action.type {
         case Constants.backAction:
@@ -64,20 +77,14 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorModalScreenPresenter {
             log(String(describing: action.type))
         }
     }
-    
-    private func processResponse(_ response: DSConstructorModel) {
-        view.configure(model: response)
-        handleAlertIfNeeded(alert: response.template)
-    }
-    
-    // MARK: - Handlers
+
     private func handleAlertIfNeeded(alert: AlertTemplate?) {
         guard let alert else { return }
 
         TemplateHandler.handle(alert, in: view) { [weak self] action in
             switch action {
             default:
-                return
+                self?.flowCoordinator.restartFlow()
             }
         }
     }
@@ -90,21 +97,9 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorModalScreenPresenter {
             in: view
         )
     }
-    
-    private func handleCriticalError(error: NetworkError, retryAction: @escaping Callback) {
-        GeneralErrorsHandler.process(
-            error: .init(networkError: error),
-            with: { [weak self] in
-                self?.didRetry = true
-                retryAction()
-            },
-            didRetry: didRetry,
-            in: view
-        )
-    }
 }
 
-// MARK: - Constants
+// MARK: - ___FILEBASENAMEASIDENTIFIER___+Constants
 private extension ___FILEBASENAMEASIDENTIFIER___ {
     enum Constants {
         static let backAction = "back"
