@@ -28,6 +28,9 @@
 		33B035332B29CF1700374227 /* AuthorizationStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B035322B29CF1700374227 /* AuthorizationStorage.swift */; };
 		33B035352B29CF8900374227 /* Dictionary+UserIdentifyHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B035342B29CF8900374227 /* Dictionary+UserIdentifyHandlers.swift */; };
 		33C550412B48B6A200E100CD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 33C550402B48B6A200E100CD /* Lottie */; };
+		428614302FE28C4A0083C479 /* PublicServiceRouteBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286142F2FE28C480083C479 /* PublicServiceRouteBuilder.swift */; };
+		428614322FE28C840083C479 /* PublicServiceCategoryRouteBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428614312FE28C820083C479 /* PublicServiceCategoryRouteBuilder.swift */; };
+		428614342FE290930083C479 /* GenericPublicServiceCallbackRouteBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428614332FE290910083C479 /* GenericPublicServiceCallbackRouteBuilder.swift */; };
 		42F49A012DCC945600B8D36F /* ConstructorMockV2Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F499F22DCC945600B8D36F /* ConstructorMockV2Module.swift */; };
 		42F49A022DCC945600B8D36F /* ConstructorMockV2Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F499F32DCC945600B8D36F /* ConstructorMockV2Presenter.swift */; };
 		42F49A0C2DCC94C800B8D36F /* ContextMenuConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F49A0B2DCC94C800B8D36F /* ContextMenuConfigurable.swift */; };
@@ -248,6 +251,9 @@
 		33B035302B29CAE600374227 /* BankIDIdentifyTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BankIDIdentifyTask.swift; sourceTree = "<group>"; };
 		33B035322B29CF1700374227 /* AuthorizationStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationStorage.swift; sourceTree = "<group>"; };
 		33B035342B29CF8900374227 /* Dictionary+UserIdentifyHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+UserIdentifyHandlers.swift"; sourceTree = "<group>"; };
+		4286142F2FE28C480083C479 /* PublicServiceRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceRouteBuilder.swift; sourceTree = "<group>"; };
+		428614312FE28C820083C479 /* PublicServiceCategoryRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceCategoryRouteBuilder.swift; sourceTree = "<group>"; };
+		428614332FE290910083C479 /* GenericPublicServiceCallbackRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPublicServiceCallbackRouteBuilder.swift; sourceTree = "<group>"; };
 		42F499F22DCC945600B8D36F /* ConstructorMockV2Module.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstructorMockV2Module.swift; sourceTree = "<group>"; };
 		42F499F32DCC945600B8D36F /* ConstructorMockV2Presenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstructorMockV2Presenter.swift; sourceTree = "<group>"; };
 		42F49A0B2DCC94C800B8D36F /* ContextMenuConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextMenuConfigurable.swift; sourceTree = "<group>"; };
@@ -1083,32 +1089,13 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		4A63C7E42E9D21F60019BE7E /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				4A63C7E22E9D21F60019BE7E /* PublicServiceOpenerProtocol.swift */,
-				4A63C7E32E9D21F60019BE7E /* PublicServicesStorage.swift */,
-			);
-			path = Protocols;
-			sourceTree = "<group>";
-		};
 		4A63C7E82E9D21F60019BE7E /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				4A63C7E52E9D21F60019BE7E /* PortalRedirectionService.swift */,
 				4A63C7E62E9D21F60019BE7E /* PublicServicesAPI.swift */,
 				4A63C7E72E9D21F60019BE7E /* PublicServicesAPIClient.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		4A63C7EB2E9D21F60019BE7E /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				4A63C7E92E9D21F60019BE7E /* PublicServiceOpener.swift */,
-				4A63C7EA2E9D21F60019BE7E /* PublicServiceRouteManager.swift */,
-			);
-			path = Utility;
 			sourceTree = "<group>";
 		};
 		4A63C7EE2E9D21F60019BE7E /* ViewModels */ = {
@@ -1137,12 +1124,13 @@
 		4A63C7F72E9D21F60019BE7E /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				4A63C7E12E9D21F60019BE7E /* Models */,
-				4A63C7E42E9D21F60019BE7E /* Protocols */,
-				4A63C7E82E9D21F60019BE7E /* Services */,
-				4A63C7EB2E9D21F60019BE7E /* Utility */,
 				4A63C7EE2E9D21F60019BE7E /* ViewModels */,
 				4A63C7F62E9D21F60019BE7E /* Views */,
+				7BE198F62B151108008C9FAC /* Utility */,
+				7BE198F32B150D4D008C9FAC /* Model */,
+				7BE198F02B150CE6008C9FAC /* Protocols */,
+				4A63C7E12E9D21F60019BE7E /* Models */,
+				4A63C7E82E9D21F60019BE7E /* Services */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1231,7 +1219,6 @@
 			isa = PBXGroup;
 			children = (
 				4A63C80F2E9D21F60019BE7E /* Catalog */,
-				7BE198EF2B150CCC008C9FAC /* Common */,
 				7B65C5DC2B0395010018D510 /* Core */,
 			);
 			path = PublicServices;
@@ -1241,7 +1228,6 @@
 			isa = PBXGroup;
 			children = (
 				7B65C5E12B0395EF0018D510 /* PSCriminalRecordExtract */,
-				7B65C5DD2B0395200018D510 /* PublicServiceCategoriesListModuleFactory.swift */,
 				7BE198B32B148389008C9FAC /* PublicServiceCoreNetworkContext+Extension.swift */,
 			);
 			path = Core;
@@ -1307,20 +1293,14 @@
 			path = Modal;
 			sourceTree = "<group>";
 		};
-		7BE198EF2B150CCC008C9FAC /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				7BE198F62B151108008C9FAC /* Utility */,
-				7BE198F32B150D4D008C9FAC /* Model */,
-				7BE198F02B150CE6008C9FAC /* Protocols */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
 		7BE198F02B150CE6008C9FAC /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
 				7BE198F12B150D1F008C9FAC /* ContextMenuProvidingView.swift */,
+				4A63C7E22E9D21F60019BE7E /* PublicServiceOpenerProtocol.swift */,
+				4A63C7E32E9D21F60019BE7E /* PublicServicesStorage.swift */,
+				4286142F2FE28C480083C479 /* PublicServiceRouteBuilder.swift */,
+				428614312FE28C820083C479 /* PublicServiceCategoryRouteBuilder.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1336,9 +1316,14 @@
 		7BE198F62B151108008C9FAC /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				4A63C7E52E9D21F60019BE7E /* PortalRedirectionService.swift */,
+				4A63C7E92E9D21F60019BE7E /* PublicServiceOpener.swift */,
 				7BE198F72B151127008C9FAC /* BaseContextMenuProvider.swift */,
+				4A63C7EA2E9D21F60019BE7E /* PublicServiceRouteManager.swift */,
 				7BE198F92B1511BA008C9FAC /* RatingServiceOpener.swift */,
 				4957051B2FACCA9E00041E25 /* PublicServiceFlowCoordinator.swift */,
+				428614332FE290910083C479 /* GenericPublicServiceCallbackRouteBuilder.swift */,
+				7B65C5DD2B0395200018D510 /* PublicServiceCategoriesListModuleFactory.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -1703,17 +1688,20 @@
 				42F9243929FBF61B0072DDC1 /* TitledTextField.swift in Sources */,
 				7B0AACF72B8C6157007E00B8 /* CrashlyticsErrorRecorder.swift in Sources */,
 				42F9336929FBF7D20072DDC1 /* BiometryRequestViewModel+Extension.swift in Sources */,
+				428614342FE290930083C479 /* GenericPublicServiceCallbackRouteBuilder.swift in Sources */,
 				42F9310829FBF7D10072DDC1 /* QRCodeScannerModule.swift in Sources */,
 				7B65C5E32B03960F0018D510 /* PSCriminalRecordExtractRoute.swift in Sources */,
 				42F9325929FBF7D20072DDC1 /* MenuPresenter.swift in Sources */,
 				4940E53B2EF99D7C002471A1 /* PushNotificationsService.swift in Sources */,
 				42F9310B29FBF7D10072DDC1 /* QRCodeScannerViewController.swift in Sources */,
 				7BE1993C2B16DB2D008C9FAC /* DocumentsReorderingPresenter.swift in Sources */,
+				428614302FE28C4A0083C479 /* PublicServiceRouteBuilder.swift in Sources */,
 				7BE199642B17C230008C9FAC /* FaqOpener.swift in Sources */,
 				7BE199402B16DB2D008C9FAC /* DocumentsReorderingViewController.swift in Sources */,
 				42F9244729FBF61B0072DDC1 /* StoreHelper.swift in Sources */,
 				42F9245D29FBF61B0072DDC1 /* JWTParser.swift in Sources */,
 				7BE1994B2B16E310008C9FAC /* DashBorderedView.swift in Sources */,
+				428614322FE28C840083C479 /* PublicServiceCategoryRouteBuilder.swift in Sources */,
 				7B7693C62B7AE0380007A89F /* DSImageNameResolver.swift in Sources */,
 				42F9339C29FBF7D30072DDC1 /* MainTabAction.swift in Sources */,
 				4940E5442EF99FC2002471A1 /* PushNotificationPayload.swift in Sources */,
@@ -1935,7 +1923,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.30.0;
+				MARKETING_VERSION = 4.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ua.gov.diia.opensource.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1970,7 +1958,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.30.0;
+				MARKETING_VERSION = 4.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ua.gov.diia.opensource.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

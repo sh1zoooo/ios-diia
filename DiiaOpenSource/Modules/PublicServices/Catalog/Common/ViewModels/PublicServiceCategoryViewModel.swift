@@ -4,7 +4,9 @@ import DiiaCommonTypes
 
 struct PublicServiceCategoryViewModel: Equatable {
     let name: String
+    let code: String
     let visibleSearch: Bool
+    let requiresPrestartWarning: Bool
     let status: PublicServiceStatus
     let tabCodes: [PublicServiceTabType]
     let publicServices: [PublicServiceShortViewModel]
@@ -15,10 +17,12 @@ struct PublicServiceCategoryViewModel: Equatable {
     
     init(model: PublicServiceCategory, typeValidator: PublicServiceCodeValidator) {
         self.name = model.name
+        self.code = model.code
         self.visibleSearch = model.visibleSearch
         self.status = model.status
         self.tabCodes = model.tabCodes
         self.chips = model.chips
+        self.requiresPrestartWarning = model.requiresPrestartWarning == true
         self.publicServices = model
             .publicServices
             .map { PublicServiceShortViewModel(model: $0, validator: typeValidator) }

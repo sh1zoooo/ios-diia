@@ -20,6 +20,7 @@ public struct PublicServiceCategory: Codable {
     let name: String
     let status: PublicServiceStatus
     let visibleSearch: Bool
+    let requiresPrestartWarning: Bool?
     let tabCodes: [PublicServiceTabType]
     let publicServices: [PublicServiceModel]
     let chips: [PublicServiceChip]?

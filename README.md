@@ -23,8 +23,8 @@ We're pleased to share the **Diia** project with you.
 1.1. Clone the repository and open the Xcode project file.
 
 ```bash
-git clone https://github.com/diia-open-source/ios-diia.git
-cd ios-diia
+git clone https://gitlab.diia.org.ua/diia-inhouse/ios-diia-simplified.git
+cd ios-diia-simplified
 open DiiaOpenSource.xcodeproj
 ```
 1.2. Wait for the SPM packages to finish resolving. 

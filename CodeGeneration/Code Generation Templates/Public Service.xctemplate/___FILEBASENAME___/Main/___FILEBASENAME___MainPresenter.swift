@@ -1,4 +1,3 @@
-//___FILEHEADER___
 
 import UIKit
 import DiiaNetwork
@@ -19,12 +18,20 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
     // MARK: - Init
     init(
         view: ConstructorScreenViewProtocol,
-        flowCoordinator: FlowCoordinatorProtocol,
+        flowCoordinator: FlowCoordinatorProtocol?,
         apiClient: ___VARIABLE_productName:identifier___APIClientProtocol = ___VARIABLE_productName:identifier___APIClient()
     ) {
         self.view = view
-        self.flowCoordinator = flowCoordinator
         self.apiClient = apiClient
+        if let flowCoordinator {
+            self.flowCoordinator = flowCoordinator
+            return
+        }
+        let fc = PublicServiceFlowCoordinator(rootView: view)
+        self.flowCoordinator = fc
+        fc.restartCallback = { [weak self] in
+            self?.fetchScreen()
+        }
     }
     
     // MARK: - Public Methods
@@ -48,13 +55,14 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
         view.setInnerTridentLoading(.loading)
 
         apiClient.mainScreen { [weak self] result in
-            self?.view.setInnerTridentLoading(.ready)
+            guard let self else { return }
+            self.view.setInnerTridentLoading(.ready)
 
             switch result {
             case let .success(response):
-                self?.processFetchScreenResponse(response)
+                self.processFetchScreenResponse(response)
             case let.failure(error):
-                self?.handleCriticalError(error: error) {
+                self.handleCriticalError(error: error) { [weak self] in
                     self?.fetchScreen()
                 }
             }

@@ -36,7 +36,6 @@ protocol PublicServiceCategoriesListAction: BasePresenter, DSConstructorEventHan
     func itemAt(index: Int, withChip: Bool) -> PublicServiceCategoryViewModel?
     func itemSelected(index: Int, withChip: Bool)
     func updateServices()
-    func checkReachability()
     func searchClick()
     func getTabsViewModel() -> TabSwitcherViewModel
     func getNewsData() -> DSHalvedCardCarouselModel?
@@ -69,7 +68,7 @@ final class PublicServiceCategoriesListPresenter: NSObject, PublicServiceCategor
                 self?.onNetworkStatus(isReachable: isReachable)
             }
     }
-
+    
     private func onNetworkStatus(isReachable: Bool) {
         if isReachable {
             if numberOfItems() == 0 {
@@ -80,6 +79,7 @@ final class PublicServiceCategoriesListPresenter: NSObject, PublicServiceCategor
     }
 
     // MARK: - PublicServiceCategoriesListAction
+    
     func handleEvent(event: ConstructorItemEvent) {
         let actionModel = event.actionParameters()
         switch actionModel?.type {
@@ -115,10 +115,11 @@ final class PublicServiceCategoriesListPresenter: NSObject, PublicServiceCategor
         let item = items[index]
         if item.status != .active { return }
         
-        if item.publicServices.count == 1, item.publicServices[0].isActive {
+        if item.requiresPrestartWarning {
+            model.publicServiceOpener.openCategory(code: item.code, in: view)
+        } else if item.publicServices.count == 1, item.publicServices[0].isActive {
             model.publicServiceOpener.openPublicService(
-                type: item.publicServices[0].type,
-                contextMenu: item.publicServices[0].contextMenu,
+                item.publicServices[0],
                 in: view)
         } else {
             view.open(module: PublicServiceCategoryModule(
@@ -156,15 +157,11 @@ final class PublicServiceCategoriesListPresenter: NSObject, PublicServiceCategor
             }
             .dispose(in: disposedBag)
     }
-
-    func checkReachability() {
-        onNetworkStatus(isReachable: ReachabilityHelper.shared.isReachable())
-    }
-
+    
     private func processResponse(response: PublicServiceResponse) {
         let validatorTask: PublicServiceCodeValidator = { [weak self] code in
             guard let self = self else { return false }
-            return self.model.publicServiceOpener.canOpenPublicService(type: code)
+            return self.model.publicServiceOpener.canOpenPublicService(code)
         }
         let allItems = response
             .publicServicesCategories

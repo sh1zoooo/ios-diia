@@ -6,9 +6,8 @@ enum PublicServicesAPI: CommonService {
 
     case getServices
     case getServiceTemplate(service: String)
-    case getOnboarding(code: String)
-    case finalScreen(service: String, code: String)
-    
+    case getPrestartWarning(category: String, service: String?)
+
     var method: HTTPMethod {
         switch self {
         default:
@@ -22,17 +21,19 @@ enum PublicServicesAPI: CommonService {
             return "v3/public-service/catalog"
         case .getServiceTemplate(let service):
             return "v1/public-service/\(service)/portal"
-        case .getOnboarding(let service):
-            return "v1/public-service/\(service)/onboarding"
-        case .finalScreen(let service, _):
-            return "v1/public-service/\(service)/application/final-screen"
+        case .getPrestartWarning:
+            return "v1/public-service/prestart-warning"
         }
     }
     
     var parameters: [String: Any]? {
         switch self {
-        case .finalScreen(_, let code):
-            return ["code": code]
+        case .getPrestartWarning(let category, let service):
+            var params = ["categoryCode": category]
+            if let service {
+                params["serviceCode"] = service
+            }
+            return params
         default: return nil
         }
     }
@@ -43,10 +44,8 @@ enum PublicServicesAPI: CommonService {
             return Constants.getPublicServices
         case .getServiceTemplate:
             return Constants.getServiceTemplate
-        case .getOnboarding(let service):
-            return service + Constants.getOnboarding
-        case .finalScreen(let service, _):
-            return service + Constants.finalScreen
+        case .getPrestartWarning:
+            return Constants.getPrestartWarning
         }
     }
 }
@@ -55,7 +54,6 @@ private extension PublicServicesAPI {
     enum Constants {
         static let getPublicServices = "getPublicServices"
         static let getServiceTemplate = "getServiceTemplate"
-        static let getOnboarding = "GetOnboarding"
-        static let finalScreen = "GetFinalScreen"
+        static let getPrestartWarning = "getPrestartWarning"
     }
 }

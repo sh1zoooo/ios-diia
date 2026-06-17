@@ -10,14 +10,12 @@ protocol PublicServiceCategoriesListView: BaseView {
 }
 
 final class PublicServiceCategoriesListViewController: UIViewController {
-    
-    // MARK: - Outlets
+    // MARK: - Properties
     private let topView = TopNavigationBigView()
-    private let contentLoadingView = ContentLoadingView()
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let emptyLabel = UILabel()
     
-    // MARK: - Properties
+    private var loadingView: LoadingView?
     var presenter: PublicServiceCategoriesListAction!
     
     // MARK: - Lifecycle
@@ -42,23 +40,44 @@ final class PublicServiceCategoriesListViewController: UIViewController {
     }
 
     // MARK: - Configuration
-    
     private func setupSubviews() {
         view.backgroundColor = .clear
-        collectionView.backgroundColor = .clear
-        contentLoadingView.backgroundColor = .clear
         topView.backgroundColor = .clear
+        collectionView.backgroundColor = .clear
+
+        view.addSubview(topView)
+        topView.anchor(
+            top: view.safeAreaLayoutGuide.topAnchor,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor
+        )
         
-        contentLoadingView.addSubview(collectionView)
-        collectionView.fillSuperview()
-        let contentStack = UIStackView.create(views: [topView, contentLoadingView])
-        view.addSubviews([contentStack, emptyLabel])
-        
-        emptyLabel.anchor(leading: view.leadingAnchor,
-                          trailing: view.trailingAnchor,
-                          padding: .allSides(Constants.emptyLabelPadding))
-        
-        contentStack.fillSuperview()
+        view.addSubview(collectionView)
+        collectionView.anchor(
+            top: topView.bottomAnchor,
+            leading: view.leadingAnchor,
+            bottom: view.bottomAnchor,
+            trailing: view.trailingAnchor
+        )
+
+        view.addSubview(emptyLabel)
+        emptyLabel.anchor(
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            padding: .allSides(Constants.emptyLabelPadding)
+        )
+    }
+
+    private func setLoadingViewState(_ state: LoadingState) {
+        switch state {
+        case .loading:
+            if loadingView == nil {
+                loadingView = LoadingView.show(in: view)
+            }
+        case .ready:
+            loadingView?.hide()
+            loadingView = nil
+        }
     }
     
     private func setupCollectionView() {
@@ -102,7 +121,7 @@ final class PublicServiceCategoriesListViewController: UIViewController {
 // MARK: - View logic
 extension PublicServiceCategoriesListViewController: PublicServiceCategoriesListView {
     func setState(state: LoadingState) {
-        contentLoadingView.setLoadingState(state)
+        setLoadingViewState(state)
         topView.isHidden = state == .loading
         collectionView.isHidden = state == .loading && presenter.numberOfItems(withChips: false) == 0
         emptyLabel.isHidden = state == .loading || !collectionView.isHidden
@@ -119,11 +138,11 @@ extension PublicServiceCategoriesListViewController: PublicServiceCategoriesList
     }
 
     func showProgress() {
-        contentLoadingView.setLoadingState(.loading)
+        setLoadingViewState(.loading)
     }
 
     func hideProgress() {
-        contentLoadingView.setLoadingState(.ready)
+        setLoadingViewState(.ready)
     }
 }
 
@@ -178,7 +197,7 @@ extension PublicServiceCategoriesListViewController: UICollectionViewDataSource 
                 eventHandler: { [weak self] event in
                     self?.presenter.handleEvent(event: event)
                 })
-                genericCell.configure(with: view)
+            genericCell.configure(with: view)
             return genericCell
         case .publicServices, .specialServices:
             guard let vm = presenter.itemAt(index: indexPath.item,

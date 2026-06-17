@@ -3,8 +3,9 @@ import Foundation
 import ReactiveKit
 import DiiaMVPModule
 import DiiaCommonTypes
+import DiiaCommonServices
 
-class PublicServiceOpener: PublicServiceOpenerProtocol {
+final class PublicServiceOpener: PublicServiceOpenerProtocol {
 
     private let bag = DisposeBag()
     private var publicServiceResponse: PublicServiceResponse?
@@ -22,18 +23,16 @@ class PublicServiceOpener: PublicServiceOpenerProtocol {
     }
     
     // MARK: - PublicServiceOpenerProtocol
-    public func openPublicService(type: String, contextMenu: [ContextMenuItem] = [], in view: BaseView) {
-        guard let serviceRoute = serviceRouteManager.routeFor(serviceType: type,
-                                                              contextMenuItems: contextMenu) else {
+    func openPublicService(_ publicService: PublicServiceShortViewModel, in view: any BaseView) {
+        guard let serviceRoute = serviceRouteManager.routeFor(publicService) else {
             return
         }
 
         serviceRoute.route(in: view)
     }
     
-    public func canOpenPublicService(type: String) -> Bool {
-        return serviceRouteManager.routeFor(serviceType: type,
-                                            contextMenuItems: []) != nil
+    public func canOpenPublicService(_ type: String) -> Bool {
+        return serviceRouteManager.canRoute(to: type)
     }
     
     public func openCategory(code: String, in view: BaseView) {
@@ -41,8 +40,12 @@ class PublicServiceOpener: PublicServiceOpenerProtocol {
         if let publicServiceResponse = publicServiceResponse {
             if let category = publicServiceResponse.publicServicesCategories
                 .first(where: { $0.code == code }) {
-                let validatorTask: PublicServiceCodeValidator = {[weak self] code in
-                    self?.canOpenPublicService(type: code) ?? false
+                if category.requiresPrestartWarning == true {
+                    openCategoryWithWarning(category, in: view)
+                    return
+                }
+                let validatorTask: PublicServiceCodeValidator = { [weak self] code in
+                    self?.canOpenPublicService(code) ?? false
                 }
                 view.open(module: PublicServiceCategoryModule(category: PublicServiceCategoryViewModel(model: category, typeValidator: validatorTask), opener: self))
             }
@@ -75,5 +78,38 @@ class PublicServiceOpener: PublicServiceOpenerProtocol {
                     return
                 }
             }.dispose(in: bag)
+    }
+    
+    private func openCategoryWithWarning(_ category: PublicServiceCategory, in view: BaseView) {
+        view.showProgress()
+        apiClient.getPrestartWarning(category: category.code, service: nil) { [weak self, weak view] result in
+            guard let self, let view else { return }
+            view.hideProgress()
+            switch result {
+            case .success(let alert):
+                TemplateHandler.handle(alert.template, in: view) { [weak self, weak view] action in
+                    if let view, action == AlertTemplateAction("continue_after_prestart_warning") {
+                        self?.openCategoryWithWarningForced(category, in: view)
+                    }
+                }
+            case .failure:
+                break
+            }
+        }
+    }
+    
+    private func openCategoryWithWarningForced(_ category: PublicServiceCategory, in view: BaseView) {
+        if let route = serviceRouteManager.categoryRouteFor(category.code) {
+            route.route(in: view)
+            return
+        }
+        let validatorTask: PublicServiceCodeValidator = { [weak self] code in
+            self?.canOpenPublicService(code) ?? false
+        }
+        if category.publicServices.count == 1, let service = category.publicServices.first {
+            openPublicService(.init(model: service, validator: validatorTask), in: view)
+            return
+        }
+        view.open(module: PublicServiceCategoryModule(category: PublicServiceCategoryViewModel(model: category, typeValidator: validatorTask), opener: self))
     }
 }

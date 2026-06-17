@@ -43,10 +43,7 @@ final class PublicServiceSearchPresenter: PublicServiceSearchAction {
     }
     
     func itemSelected(item: PublicServiceSearchViewModel) {
-        publicServiceOpener.openPublicService(type: item.publicService.type,
-                                              contextMenu: item.publicService.contextMenu,
-                                              in: view)
-
+        publicServiceOpener.openPublicService(item.publicService, in: view)
     }
     
     func setSearch(search: String?) {

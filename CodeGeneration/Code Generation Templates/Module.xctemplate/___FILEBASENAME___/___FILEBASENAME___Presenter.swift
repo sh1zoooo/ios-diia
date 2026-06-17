@@ -1,4 +1,3 @@
-//___FILEHEADER___
 
 import UIKit
 import DiiaNetwork
@@ -11,17 +10,18 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
     // MARK: - Properties
     unowned var view: ConstructorScreenViewProtocol
     
-    //    private let apiClient: ApiClient
+//    private let apiClient: ApiClientProtocol
     private let flowCoordinator: FlowCoordinatorProtocol
     
     // MARK: - Init
     init(
         view: ConstructorScreenViewProtocol,
         flowCoordinator: FlowCoordinatorProtocol
+//        apiClient: ApiClientProtocol = ApiClient()
     ) {
         self.view = view
         self.flowCoordinator = flowCoordinator
-        //        self.apiClient = APIClient()
+//        self.apiClient = apiClient
     }
     
     // MARK: - Public Methods
@@ -42,28 +42,28 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
     // MARK: - Private Methods -
     // MARK: - API
     private func fetchScreen() {
-//        view.setInnerTridentLoading(.loading)
+//        view.setLoadingState(.loading)
 //
 //        apiClient.mainScreen { [weak self] result in
-//            self?.view.setInnerTridentLoading(.ready)
-//
+//            guard let self else { return }
+//            self.view.setLoadingState(.ready)
 //            switch result {
-//            case let .success(response):
-//                self?.processFetchScreenResponse(response)
-//            case let.failure(error):
-//                self?.handleError(error: error) {
+//            case .success(let response):
+//                self.processFetchScreenResponse(response)
+//            case .failure(let error):
+//                self.handleError(error: error) { [weak self] in
 //                    self?.fetchScreen()
 //                }
 //            }
 //        }
     }
 
+    // MARK: - Handlers
     private func processFetchScreenResponse(_ response: DSConstructorModel) {
         view.configure(model: response)
         handleAlertIfNeeded(alert: response.template)
     }
 
-    // MARK: - Handlers
     private func actionTapped(action: DSActionParameter, statefullHandler: StatefullViewProtocol?) {
         switch action.type {
         case Constants.backAction:

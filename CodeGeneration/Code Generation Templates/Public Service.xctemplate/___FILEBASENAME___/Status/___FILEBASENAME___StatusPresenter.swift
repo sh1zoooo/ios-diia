@@ -1,4 +1,3 @@
-//___FILEHEADER___
 
 import UIKit
 import DiiaNetwork
@@ -50,13 +49,14 @@ final class ___FILEBASENAMEASIDENTIFIER___: ConstructorScreenPresenter {
         view.setInnerTridentLoading(.loading)
 
         apiClient.statusScreen(applicationId: applicationId) { [weak self] result in
-            self?.view.setInnerTridentLoading(.ready)
+            guard let self else { return }
+            self.view.setInnerTridentLoading(.ready)
 
             switch result {
             case let .success(response):
-                self?.processFetchScreenResponse(response)
+                self.processFetchScreenResponse(response)
             case let.failure(error):
-                self?.handleError(error: error) {
+                self.handleCriticalError(error: error) { [weak self] in
                     self?.fetchScreen()
                 }
             }

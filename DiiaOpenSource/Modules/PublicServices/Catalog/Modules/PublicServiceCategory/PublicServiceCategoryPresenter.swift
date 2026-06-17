@@ -37,9 +37,7 @@ final class PublicServiceCategoryPresenter: PublicServiceCategoryAction {
     
     func itemSelected(_ item: PublicServiceShortViewModel?) {
         guard let item = item else { return }
-        publicServiceOpener.openPublicService(type: item.type,
-                                              contextMenu: item.contextMenu,
-                                              in: view)
+        publicServiceOpener.openPublicService(item, in: view)
     }
     
     func searchClick() {

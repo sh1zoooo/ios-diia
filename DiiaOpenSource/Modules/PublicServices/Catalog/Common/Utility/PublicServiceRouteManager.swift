@@ -3,19 +3,30 @@ import DiiaCommonTypes
 
 public typealias ServiceTypeCode = String
 
-public typealias PublicServiceRouteCreateHandler = (_ contextMenuItems: [ContextMenuItem]) -> RouterProtocol
+final class PublicServiceRouteManager {
+    private let routeBuilders: [ServiceTypeCode: PublicServiceRouteBuilder]
+    private let categoryRouteBuilders: [String: PublicServiceCategoryRouteBuilder]
 
-public class PublicServiceRouteManager {
-    private let routeCreateHandlers: [ServiceTypeCode: PublicServiceRouteCreateHandler]
-
-    public init(routeCreateHandlers: [ServiceTypeCode: PublicServiceRouteCreateHandler]) {
-        self.routeCreateHandlers = routeCreateHandlers
+    init(routeBuilders: [PublicServiceRouteBuilder], categoryRouteBuilders: [PublicServiceCategoryRouteBuilder]) {
+        self.routeBuilders = Dictionary(uniqueKeysWithValues: routeBuilders.map { ($0.key(), $0) })
+        self.categoryRouteBuilders = Dictionary(uniqueKeysWithValues: categoryRouteBuilders.map { ($0.key(), $0) })
     }
 
-    func routeFor(serviceType: ServiceTypeCode, contextMenuItems: [ContextMenuItem]) -> RouterProtocol? {
-        guard let routeCreateHandler = routeCreateHandlers[serviceType] else {
+    func categoryRouteFor(_ code: String) -> RouterProtocol? {
+        guard let routeCreateHandler = categoryRouteBuilders[code] else {
             return nil
         }
-        return routeCreateHandler(contextMenuItems)
+        return routeCreateHandler.createRouter(code)
+    }
+    
+    func routeFor(_ publicService: PublicServiceShortViewModel) -> RouterProtocol? {
+        guard let routeCreateHandler = routeBuilders[publicService.type] else {
+            return nil
+        }
+        return routeCreateHandler.createRouter(publicService)
+    }
+    
+    func canRoute(to serviceType: ServiceTypeCode) -> Bool {
+        return routeBuilders.keys.contains(serviceType)
     }
 }

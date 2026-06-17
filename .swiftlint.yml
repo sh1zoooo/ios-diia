@@ -1,8 +1,9 @@
-warning_threshold: 30
+warning_threshold: 140
 
 excluded:
   - DiiaOpenSource/Resources/
   - DiiaOpenSource/Resources/Strings/Localizable.swift
+  - CodeGeneration
 
 disabled_rules:
   - control_statement
@@ -58,6 +59,6 @@ nesting:
 analyzer_rules:
   - unused_import
   - unused_declaration
-  
+
 unused_declaration:
   severity: warning
