@@ -22,29 +22,25 @@ final class SettingsPresenter: SettingsAction {
     }
     
     private func prepareSettings() {
-        var settings: [SettingsViewModel] = [
+        // FORK: only Profile + Documents order remain. Pincode and biometry
+        // don't make sense without a logged-in user, so they are hidden.
+        let settings: [SettingsViewModel] = [
+            .titled(
+                vm: TitleCellViewModel(
+                    title: "Профіль",
+                    iconName: R.image.menuDiiaID.name,
+                    action: { [weak view] in view?.open(module: ProfileModule()) }
+                )
+            ),
             .titled(
                 vm: TitleCellViewModel(
                     title: R.Strings.settings_docs_order.localized(),
                     iconName: R.image.orderIcon.name,
                     action: { [weak view] in view?.open(module: DocumentsReorderingModule()) }
                 )
-            ),
-            .titled(
-                vm: TitleCellViewModel(
-                    title: R.Strings.menu_change_pin.localized(),
-                    iconName: R.image.menuChangePincode.name,
-                    action: { [weak view] in
-                        view?.open(module: ChangePincodeModule(pinCodeLength: AppConstants.App.defaultPinCodeLength, context: ChangePincodeModuleContext.create()))
-                    }
-                )
             )
         ]
-        
-        if let biometrySettingsViewModel = prepareBiometrySettingsViewModel() {
-            settings.append(.switched(vm: biometrySettingsViewModel))
-        }
-        
+
         self.settings = settings
     }
     

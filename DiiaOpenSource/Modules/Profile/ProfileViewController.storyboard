@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Profile View Controller-->
+        <scene sceneID="p00-sc-1a2">
+            <objects>
+                <viewController storyboardIdentifier="ProfileViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P00-VC-1a2" customClass="ProfileViewController" customModule="DiiaOpenSource" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="v00-VW-2bc">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hdr">
+                                <rect key="frame" x="0.0" y="44" width="414" height="56"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="backBtn">
+                                        <rect key="frame" x="14" y="6" width="34" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="34" id="bw"/>
+                                            <constraint firstAttribute="height" constant="44" id="bh"/>
+                                        </constraints>
+                                        <state key="normal" image="menu_back"/>
+                                        <connections>
+                                            <action selector="backTapped" destination="P00-VC-1a2" eventType="touchUpInside" id="ba"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Профіль" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="titleLbl">
+                                        <rect key="frame" x="0.0" y="17" width="414" height="22"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0" alpha="0" colorSpace="custom" customSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="56" id="hdrH"/>
+                                    <constraint firstItem="backBtn" firstAttribute="leading" secondItem="hdr" secondAttribute="leading" constant="14" id="bL"/>
+                                    <constraint firstItem="backBtn" firstAttribute="centerY" secondItem="hdr" secondAttribute="centerY" id="bC"/>
+                                    <constraint firstItem="titleLbl" firstAttribute="leading" secondItem="hdr" secondAttribute="leading" id="tL"/>
+                                    <constraint firstItem="titleLbl" firstAttribute="trailing" secondItem="hdr" secondAttribute="trailing" id="tR"/>
+                                    <constraint firstItem="titleLbl" firstAttribute="centerY" secondItem="hdr" secondAttribute="centerY" id="tC"/>
+                                </constraints>
+                            </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr">
+                                <rect key="frame" x="0.0" y="100" width="414" height="762"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="content" userLabel="Content">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="900"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="avatarImg">
+                                                <rect key="frame" x="157" y="20" width="100" height="100"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="100" id="aw"/>
+                                                    <constraint firstAttribute="height" constant="100" id="ah"/>
+                                                </constraints>
+                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="changePhotoBtn">
+                                                <rect key="frame" x="20" y="130" width="186" height="36"/>
+                                                <state key="normal" title="Змінити фото"/>
+                                                <connections>
+                                                    <action selector="changePhotoTapped" destination="P00-VC-1a2" eventType="touchUpInside" id="cpA"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="removePhotoBtn">
+                                                <rect key="frame" x="208" y="130" width="186" height="36"/>
+                                                <state key="normal" title="Видалити фото"/>
+                                                <connections>
+                                                    <action selector="removePhotoTapped" destination="P00-VC-1a2" eventType="touchUpInside" id="rpA"/>
+                                                </connections>
+                                            </button>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="form">
+                                                <rect key="frame" x="20" y="190" width="374" height="380"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Ім’я" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="firstNameFld">
+                                                        <rect key="frame" x="0.0" y="0.0" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Прізвище" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lastNameFld">
+                                                        <rect key="frame" x="0.0" y="56" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="По батькові" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="middleNameFld">
+                                                        <rect key="frame" x="0.0" y="112" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Дата народження" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="birthDateFld">
+                                                        <rect key="frame" x="0.0" y="168" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Місто" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cityFld">
+                                                        <rect key="frame" x="0.0" y="224" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Телефон" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="phoneFld">
+                                                        <rect key="frame" x="0.0" y="280" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="374" placeholderIntrinsicHeight="44" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="emailFld">
+                                                        <rect key="frame" x="0.0" y="336" width="374" height="44"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                                                    </textField>
+                                                </subviews>
+                                            </stackView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="aboutTxt">
+                                                <rect key="frame" x="20" y="582" width="374" height="120"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="aboutH"/>
+                                                </constraints>
+                                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Про себе" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aboutPhldr">
+                                                <rect key="frame" x="28" y="592" width="64" height="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <color key="textColor" systemColor="placeholderTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="clearAllBtn">
+                                                <rect key="frame" x="20" y="722" width="374" height="44"/>
+                                                <color key="backgroundColor" systemColor="systemRedColor"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Очистити всі дані"/>
+                                                <connections>
+                                                    <action selector="clearAllTapped" destination="P00-VC-1a2" eventType="touchUpInside" id="clrA"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="avatarImg" firstAttribute="top" secondItem="content" secondAttribute="top" constant="20" id="aT"/>
+                                            <constraint firstItem="avatarImg" firstAttribute="centerX" secondItem="content" secondAttribute="centerX" id="aX"/>
+                                            <constraint firstItem="changePhotoBtn" firstAttribute="top" secondItem="avatarImg" secondAttribute="bottom" constant="10" id="cpT"/>
+                                            <constraint firstItem="changePhotoBtn" firstAttribute="leading" secondItem="content" secondAttribute="leading" constant="20" id="cpL"/>
+                                            <constraint firstItem="removePhotoBtn" firstAttribute="top" secondItem="avatarImg" secondAttribute="bottom" constant="10" id="rpT"/>
+                                            <constraint firstItem="removePhotoBtn" firstAttribute="trailing" secondItem="content" secondAttribute="trailing" constant="-20" id="rpR"/>
+                                            <constraint firstItem="removePhotoBtn" firstAttribute="leading" secondItem="changePhotoBtn" secondAttribute="trailing" constant="2" id="rpL2"/>
+                                            <constraint firstItem="changePhotoBtn" firstAttribute="width" secondItem="removePhotoBtn" secondAttribute="width" id="cpW"/>
+                                            <constraint firstItem="form" firstAttribute="top" secondItem="changePhotoBtn" secondAttribute="bottom" constant="24" id="fT"/>
+                                            <constraint firstItem="form" firstAttribute="leading" secondItem="content" secondAttribute="leading" constant="20" id="fL"/>
+                                            <constraint firstItem="form" firstAttribute="trailing" secondItem="content" secondAttribute="trailing" constant="-20" id="fR"/>
+                                            <constraint firstItem="aboutTxt" firstAttribute="top" secondItem="form" secondAttribute="bottom" constant="12" id="abT"/>
+                                            <constraint firstItem="aboutTxt" firstAttribute="leading" secondItem="content" secondAttribute="leading" constant="20" id="abL"/>
+                                            <constraint firstItem="aboutTxt" firstAttribute="trailing" secondItem="content" secondAttribute="trailing" constant="-20" id="abR"/>
+                                            <constraint firstItem="aboutPhldr" firstAttribute="top" secondItem="aboutTxt" secondAttribute="top" constant="10" id="abPT"/>
+                                            <constraint firstItem="aboutPhldr" firstAttribute="leading" secondItem="aboutTxt" secondAttribute="leading" constant="8" id="abPL"/>
+                                            <constraint firstItem="clearAllBtn" firstAttribute="top" secondItem="aboutTxt" secondAttribute="bottom" constant="20" id="clT"/>
+                                            <constraint firstItem="clearAllBtn" firstAttribute="leading" secondItem="content" secondAttribute="leading" constant="20" id="clL"/>
+                                            <constraint firstItem="clearAllBtn" firstAttribute="trailing" secondItem="content" secondAttribute="trailing" constant="-20" id="clR"/>
+                                            <constraint firstItem="clearAllBtn" firstAttribute="height" constant="44" id="clH"/>
+                                            <constraint firstAttribute="bottom" secondItem="clearAllBtn" secondAttribute="bottom" constant="20" id="contentBot"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="content" firstAttribute="top" secondItem="scr" secondAttribute="top" id="sCT"/>
+                                    <constraint firstItem="content" firstAttribute="leading" secondItem="scr" secondAttribute="leading" id="sCL"/>
+                                    <constraint firstItem="content" firstAttribute="trailing" secondItem="scr" secondAttribute="trailing" id="sCR"/>
+                                    <constraint firstItem="content" firstAttribute="bottom" secondItem="scr" secondAttribute="bottom" id="sCB"/>
+                                    <constraint firstItem="content" firstAttribute="width" secondItem="scr" secondAttribute="width" id="sCW"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="safe"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hdr" firstAttribute="top" secondItem="safe" secondAttribute="top" id="hdrT"/>
+                            <constraint firstItem="hdr" firstAttribute="leading" secondItem="safe" secondAttribute="leading" id="hdrL"/>
+                            <constraint firstItem="hdr" firstAttribute="trailing" secondItem="safe" secondAttribute="trailing" id="hdrR"/>
+                            <constraint firstItem="scr" firstAttribute="top" secondItem="hdr" secondAttribute="bottom" id="scrT"/>
+                            <constraint firstItem="scr" firstAttribute="leading" secondItem="safe" secondAttribute="leading" id="scrL"/>
+                            <constraint firstItem="scr" firstAttribute="trailing" secondItem="safe" secondAttribute="trailing" id="scrR"/>
+                            <constraint firstItem="scr" firstAttribute="bottom" secondItem="safe" secondAttribute="bottom" id="scrB"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="titleLabel" destination="titleLbl" id="oTitle"/>
+                        <outlet property="backButton" destination="backBtn" id="oBack"/>
+                        <outlet property="avatarImageView" destination="avatarImg" id="oAvatar"/>
+                        <outlet property="changePhotoButton" destination="changePhotoBtn" id="oChange"/>
+                        <outlet property="removePhotoButton" destination="removePhotoBtn" id="oRemove"/>
+                        <outlet property="firstNameField" destination="firstNameFld" id="oFirst"/>
+                        <outlet property="lastNameField" destination="lastNameFld" id="oLast"/>
+                        <outlet property="middleNameField" destination="middleNameFld" id="oMid"/>
+                        <outlet property="birthDateField" destination="birthDateFld" id="oBd"/>
+                        <outlet property="cityField" destination="cityFld" id="oCity"/>
+                        <outlet property="phoneField" destination="phoneFld" id="oPhone"/>
+                        <outlet property="emailField" destination="emailFld" id="oEmail"/>
+                        <outlet property="aboutTextView" destination="aboutTxt" id="oAbout"/>
+                        <outlet property="aboutPlaceholderLabel" destination="aboutPhldr" id="oAboutP"/>
+                        <outlet property="clearAllButton" destination="clearAllBtn" id="oClear"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pIB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="73" y="134"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="menu_back" width="20.5" height="18"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="placeholderTextColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

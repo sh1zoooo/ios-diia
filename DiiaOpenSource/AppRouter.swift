@@ -129,38 +129,10 @@ class AppRouter {
     
     // MARK: - Private
     private func routeStart() {
-        func preparePinCodeModule(_ authFlow: AuthFlow) -> CreatePinCodeModule {
-            return CreatePinCodeModule(
-                    viewModel: PinCodeViewModel(
-                    pinCodeLength: AppConstants.App.defaultPinCodeLength,
-                    createDetails: R.Strings.authorization_new_pin_details.localized(),
-                    repeatDetails: R.Strings.authorization_repeat_pin_details.localized(),
-                    authFlow: authFlow,
-                    completionHandler: { (pincode, view) in
-                        ServicesProvider.shared.authService.setPincode(pincode: pincode)
-                        switch BiometryHelper.biometricType() {
-                        case .none:
-                            AppRouter.instance.open(module: MainTabBarModule(), needPincode: false, asRoot: true)
-                            AppRouter.instance.didFinishStartingWithPincode = true
-                        default:
-                            self.storeHelper.save(false, type: Bool.self, forKey: .isBiometryEnabled)
-                            view.open(module: BiometryRequestModule(viewModel: .default(authFlow: authFlow)))
-                        }
-                    }
-                )
-            )
-        }
-        switch ServicesProvider.shared.authService.authState {
-        case .userAuth:
-            StartScenarioService().beginLoginScenarios()
-            if ServicesProvider.shared.authService.havePincode() {
-                open(module: MainTabBarModule(), needPincode: true, asRoot: true)
-            } else {
-                open(module: preparePinCodeModule(.login), needPincode: false)
-            }
-        case .notAuthorized, .serviceAuth:
-            open(module: StartAuthorizationModule(), needPincode: false, asRoot: true)
-        }
+        // FORK: Login / pincode / authorization are completely bypassed.
+        // The app boots straight into the main tab bar.
+        open(module: MainTabBarModule(), needPincode: false, asRoot: true)
+        didFinishStartingWithPincode = true
     }
     
     private func forceOpen(module: BaseModule, asRoot: Bool, completion: Callback?) {

@@ -2,30 +2,34 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleIdentifier</key>
-	<string>$(APP_BUNDLE_ID)</string>
-	<key>CFBundleName</key>
-	<string>$(APP_NAME)</string>
-	<key>ApiBaseURL</key>
-	<string>$(API_BASE_URL)</string>
-	<key>Configuration</key>
-	<string>DiiaStage</string>
-	<key>IsInDebug</key>
-	<string>$(IS_IN_DEBUG)</string>
-	<key>Scheme</key>
-	<string>$(SCHEME)</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Enabling Face ID allows you quick and secure access to your account</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-	</dict>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fb</string>
-		<string>viber</string>
-		<string>tg</string>
-	</array>
+        <key>CFBundleIdentifier</key>
+        <string>$(APP_BUNDLE_ID)</string>
+        <key>CFBundleName</key>
+        <string>$(APP_NAME)</string>
+        <key>ApiBaseURL</key>
+        <string>$(API_BASE_URL)</string>
+        <key>Configuration</key>
+        <string>DiiaStage</string>
+        <key>IsInDebug</key>
+        <string>$(IS_IN_DEBUG)</string>
+        <key>Scheme</key>
+        <string>$(SCHEME)</string>
+        <key>NSFaceIDUsageDescription</key>
+        <string>Enabling Face ID allows you quick and secure access to your account</string>
+        <key>NSCameraUsageDescription</key>
+        <string>Дія потребує доступу до камери, щоб зробити фото для вашого профілю.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Дія потребує доступу до галереї, щоб вибрати фото для вашого профілю.</string>
+        <key>UIApplicationSceneManifest</key>
+        <dict>
+                <key>UIApplicationSupportsMultipleScenes</key>
+                <false/>
+        </dict>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+                <string>fb</string>
+                <string>viber</string>
+                <string>tg</string>
+        </array>
 </dict>
 </plist>

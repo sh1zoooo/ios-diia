@@ -63,9 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.addSubview(stubImage)
         self.window?.endEditing(true)
         UIView.animate(withDuration: 0.2, animations: { self.stubImage.alpha = 1 })
-        if router.didFinishStarting {
-            ServicesProvider.shared.authService.setLastPincodeDate(date: Date())
-        }
+        // FORK: no pincode date bookkeeping.
+
         ScreenBrightnessHelper.shared.resetBrightness()
     }
     
@@ -87,9 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        if ServicesProvider.shared.authService.doesNeedPincode() {
-            router.showPincode()
-        }
+        // FORK: no pincode challenge on foreground.
     }
     
     // MARK: - Disable Third Party Keyboards

@@ -1,0 +1,91 @@
+name: Build unsigned IPA
+
+# This workflow builds an unsigned .ipa on the GitHub Actions macOS runner.
+# Because there is no signing identity, the produced .ipa MUST be sideloaded
+# locally with your own Apple ID (Sideloadly / AltStore / TrollStore /
+# jailbreak install). See README_FORK.md for details.
+
+on:
+  push:
+    branches: [ "feature/no-auth-profile", "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Show Xcode & SDK info
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep iphoneos
+
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild \
+            -project DiiaOpenSource.xcodeproj \
+            -scheme DiiaOpenSource \
+            -configuration Release \
+            -showBuildSettings \
+            -destination "generic/platform=iOS" \
+            > /dev/null
+
+      - name: Build .app (no code signing)
+        run: |
+          set -e
+          mkdir -p build
+          xcodebuild \
+            -project DiiaOpenSource.xcodeproj \
+            -scheme DiiaOpenSource \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            CONFIGURATION_BUILD_DIR="$(pwd)/build" \
+            -derivedDataPath "$(pwd)/DerivedData" \
+            build
+
+      - name: Package unsigned .ipa
+        run: |
+          set -e
+          APP_PATH="$(pwd)/build/DiiaOpenSource.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "ERROR: DiiaOpenSource.app not found in build dir"
+            ls -la "$(pwd)/build"
+            exit 1
+          fi
+
+          # Standard unsigned ipa layout: Payload/DiiaOpenSource.app
+          STAGING="$(pwd)/ipa_staging"
+          rm -rf "$STAGING"
+          mkdir -p "$STAGING/Payload"
+          cp -R "$APP_PATH" "$STAGING/Payload/"
+
+          # Strip any embedded code-signature & provisioning metadata
+          # so sideload tools can re-sign cleanly.
+          rm -rf "$STAGING/Payload/DiiaOpenSource.app/_CodeSignature"
+          rm -f  "$STAGING/Payload/DiiaOpenSource.app/embedded.mobileprovision"
+
+          cd "$STAGING"
+          zip -r "$(pwd)/../DiiaOpenSource-unsigned.ipa" Payload
+          cd ..
+          ls -la DiiaOpenSource-unsigned.ipa
+
+      - name: Upload unsigned IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DiiaOpenSource-unsigned-ipa
+          path: DiiaOpenSource-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
