@@ -17,7 +17,9 @@ class AppConfigurator {
 
         let mirgateService = MigrationService()
         mirgateService.migrateIfNeeded()
-        
+
+        DriverLicenseSeeder.seedIfNeeded(storeHelper: storeHelper)
+
         FailableDecodableConfig.errorReporter = CrashlyticsErrorRecorder()
 
         // Adjusting DiiaNetwork.NetworkConfiguration must precede any work with packages
