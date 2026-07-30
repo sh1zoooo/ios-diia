@@ -219,6 +219,7 @@
                 7BE199302B16DB2D008C9FAC /* DocumentsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE1990E2B16DB2D008C9FAC /* DocumentsAPI.swift */; };
                 7BE199342B16DB2D008C9FAC /* AddDocumentsActionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199132B16DB2D008C9FAC /* AddDocumentsActionProvider.swift */; };
                 7BE199362B16DB2D008C9FAC /* DocumentsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199152B16DB2D008C9FAC /* DocumentsProcessor.swift */; };
+                3C2C4AC45FB0607FE9869540 /* DriverLicenseSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */; };
                 7BE199372B16DB2D008C9FAC /* DocumentsReservePhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */; };
                 7BE199382B16DB2D008C9FAC /* DocumentsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */; };
                 7BE1993B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE1991B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift */; };
@@ -446,6 +447,7 @@
                 7BE1990E2B16DB2D008C9FAC /* DocumentsAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsAPI.swift; sourceTree = "<group>"; };
                 7BE199132B16DB2D008C9FAC /* AddDocumentsActionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDocumentsActionProvider.swift; sourceTree = "<group>"; };
                 7BE199152B16DB2D008C9FAC /* DocumentsProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsProcessor.swift; sourceTree = "<group>"; };
+                8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseSeeder.swift; sourceTree = "<group>"; };
                 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsReservePhotoService.swift; sourceTree = "<group>"; };
                 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsLoader.swift; sourceTree = "<group>"; };
                 7BE1991B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsReorderingModule.swift; sourceTree = "<group>"; };
@@ -1393,6 +1395,7 @@
                                 7BE199152B16DB2D008C9FAC /* DocumentsProcessor.swift */,
                                 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */,
                                 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */,
+                                8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */,
                         );
                         path = Services;
                         sourceTree = "<group>";
@@ -1780,6 +1783,7 @@
                                 42F922C529FBF4C10072DDC1 /* EnvironmentVars.swift in Sources */,
                                 7BE1992F2B16DB2D008C9FAC /* DocumentsAPIClient.swift in Sources */,
                                 7BE199362B16DB2D008C9FAC /* DocumentsProcessor.swift in Sources */,
+                                3C2C4AC45FB0607FE9869540 /* DriverLicenseSeeder.swift in Sources */,
                                 42F9325A29FBF7D20072DDC1 /* MenuViewController.swift in Sources */,
                                 42F923FA29FBF61B0072DDC1 /* DeepLinkRoute.swift in Sources */,
                                 7B0AACF92B8C670E007E00B8 /* AnaliticsAuthMethodsAdapter.swift in Sources */,
