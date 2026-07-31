@@ -14,11 +14,19 @@ class AppConfigurator {
             storeHelper.clearAllData()
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        // FORK: the no-login boot flow skips StartAuthorizationPresenter, which is the
+        // only place that normally sets this flag to true. Without it, the check above
+        // would call clearAllData() on every single launch, wiping the driver-license
+        // card (and anything else in StoreHelper) each time the app restarts.
+        storeHelper.save(true, type: Bool.self, forKey: .hasAppBeenLaunchedBefore)
 
         let mirgateService = MigrationService()
         mirgateService.migrateIfNeeded()
 
-        DriverLicenseSeeder.seedIfNeeded(storeHelper: storeHelper)
+        // Rebuilds the driver-license card from DriverLicenseStorage on every launch
+        // (cheap + idempotent), so it's always in sync with whatever the user entered
+        // in Settings, even if StoreHelper was cleared for some other reason.
+        DriverLicenseSeeder.sync(storeHelper: storeHelper)
 
         FailableDecodableConfig.errorReporter = CrashlyticsErrorRecorder()
 

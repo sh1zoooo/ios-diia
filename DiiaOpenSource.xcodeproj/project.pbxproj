@@ -220,6 +220,9 @@
                 7BE199342B16DB2D008C9FAC /* AddDocumentsActionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199132B16DB2D008C9FAC /* AddDocumentsActionProvider.swift */; };
                 7BE199362B16DB2D008C9FAC /* DocumentsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199152B16DB2D008C9FAC /* DocumentsProcessor.swift */; };
                 3C2C4AC45FB0607FE9869540 /* DriverLicenseSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */; };
+                86176550F1E50DA75DCF5428 /* DriverLicenseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */; };
+                C53E055544D49C372A9CCBDB /* DriverLicenseEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */; };
+                F96CE46B2C0D63B190DDACC1 /* DriverLicenseEditModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */; };
                 7BE199372B16DB2D008C9FAC /* DocumentsReservePhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */; };
                 7BE199382B16DB2D008C9FAC /* DocumentsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */; };
                 7BE1993B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE1991B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift */; };
@@ -448,6 +451,9 @@
                 7BE199132B16DB2D008C9FAC /* AddDocumentsActionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDocumentsActionProvider.swift; sourceTree = "<group>"; };
                 7BE199152B16DB2D008C9FAC /* DocumentsProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsProcessor.swift; sourceTree = "<group>"; };
                 8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseSeeder.swift; sourceTree = "<group>"; };
+                0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseStorage.swift; sourceTree = "<group>"; };
+                AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseEditViewController.swift; sourceTree = "<group>"; };
+                8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseEditModule.swift; sourceTree = "<group>"; };
                 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsReservePhotoService.swift; sourceTree = "<group>"; };
                 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsLoader.swift; sourceTree = "<group>"; };
                 7BE1991B2B16DB2D008C9FAC /* DocumentsReorderingModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsReorderingModule.swift; sourceTree = "<group>"; };
@@ -1396,6 +1402,9 @@
                                 7BE199162B16DB2D008C9FAC /* DocumentsReservePhotoService.swift */,
                                 7BE199172B16DB2D008C9FAC /* DocumentsLoader.swift */,
                                 8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */,
+                                0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */,
+                                AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */,
+                                8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */,
                         );
                         path = Services;
                         sourceTree = "<group>";
@@ -1784,6 +1793,9 @@
                                 7BE1992F2B16DB2D008C9FAC /* DocumentsAPIClient.swift in Sources */,
                                 7BE199362B16DB2D008C9FAC /* DocumentsProcessor.swift in Sources */,
                                 3C2C4AC45FB0607FE9869540 /* DriverLicenseSeeder.swift in Sources */,
+                                86176550F1E50DA75DCF5428 /* DriverLicenseStorage.swift in Sources */,
+                                C53E055544D49C372A9CCBDB /* DriverLicenseEditViewController.swift in Sources */,
+                                F96CE46B2C0D63B190DDACC1 /* DriverLicenseEditModule.swift in Sources */,
                                 42F9325A29FBF7D20072DDC1 /* MenuViewController.swift in Sources */,
                                 42F923FA29FBF61B0072DDC1 /* DeepLinkRoute.swift in Sources */,
                                 7B0AACF92B8C670E007E00B8 /* AnaliticsAuthMethodsAdapter.swift in Sources */,

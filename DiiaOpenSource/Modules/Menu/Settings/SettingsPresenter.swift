@@ -34,6 +34,13 @@ final class SettingsPresenter: SettingsAction {
             ),
             .titled(
                 vm: TitleCellViewModel(
+                    title: "Посвідчення водія",
+                    iconName: R.image.orderIcon.name,
+                    action: { [weak view] in view?.open(module: DriverLicenseEditModule()) }
+                )
+            ),
+            .titled(
+                vm: TitleCellViewModel(
                     title: R.Strings.settings_docs_order.localized(),
                     iconName: R.image.orderIcon.name,
                     action: { [weak view] in view?.open(module: DocumentsReorderingModule()) }
