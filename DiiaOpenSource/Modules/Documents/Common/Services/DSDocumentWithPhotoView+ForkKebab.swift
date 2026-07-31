@@ -86,22 +86,30 @@ extension DSDocumentWithPhotoView {
 
         let button = UIButton(type: .system)
         button.backgroundColor = .black
-        button.layer.cornerRadius = 18
+        button.layer.cornerRadius = 14    // half of 28 → smaller, cleaner circle
         button.clipsToBounds = true
         button.setTitle("⋯", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 22, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.white, for: .normal)
         button.contentVerticalAlignment = .center
         button.contentHorizontalAlignment = .center
+        // Negative content insets so the "⋯" glyph stays optically centered
+        // (the glyph has weird built-in padding in most system fonts).
+        button.contentEdgeInsets = UIEdgeInsets(top: -2, left: 0, bottom: -2, right: 0)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(forkKebabTapped), for: .touchUpInside)
 
         addSubview(button)
+        // Position: trailing 12pt, bottom 16pt.
+        // The bottomHeading occupies roughly the bottom ~80pt of the card
+        // (3 lines of ~21pt name + 16pt padding below). With bottom = 16pt,
+        // the button's vertical center sits at ~30pt from the bottom — which
+        // lines up with the patronymic line (3rd line of the multi-line name).
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 36),
-            button.heightAnchor.constraint(equalToConstant: 36),
+            button.widthAnchor.constraint(equalToConstant: 28),
+            button.heightAnchor.constraint(equalToConstant: 28),
             button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
 
         objc_setAssociatedObject(self, &forkKebabKey, button, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)

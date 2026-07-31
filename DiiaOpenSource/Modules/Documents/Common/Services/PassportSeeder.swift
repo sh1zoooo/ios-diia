@@ -62,16 +62,25 @@ enum PassportSeeder {
             headingWithSubtitlesMlc: nil
         )
 
-        // Build a long marquee text. Without the time+date, DSTickerView will
-        // triple the short text and you'd see "Документ дійснийДокумент дійсний...".
-        // The user explicitly asked for the format below — same sentence twice,
-        // joined by ' • '. This guarantees a long-enough string so the marquee
-        // animation never loops the text.
+        // Ticker text. DSTickerView.adjustLabelSize() duplicates the text while
+        // it's shorter than the ticker frame:
+        //     while label.intrinsicContentSize.width < frame.width { text += text }
+        // and then duplicates once more for the marquee scroll.
+        //
+        // If our value is "A • B", duplicating it produces "A • BA • B" —
+        // the two halves get glued without a separator (because the source
+        // string ends with "B", not with "• ").
+        //
+        // Fix: end the value with " • " so every duplicate glues cleanly.
+        // Final visible string (after one duplication):
+        //     "Документ оновлено о 16:27 | 31.07.2026 • Документ оновлено о 16:27 | 31.07.2026 • "
+        // which scrolls forever as "... • unit • unit • unit • ..." with
+        // consistent separators.
         let now = Date()
         let timeStr = format(now, "HH:mm")
         let dateStr = format(now, "dd.MM.yyyy")
         let unit = "Документ оновлено о \(timeStr) | \(dateStr)"
-        let tickerText = "\(unit) • \(unit)"
+        let tickerText = "\(unit) • "
 
         let ticker = DSTickerAtom(
             usage: .document,
@@ -79,24 +88,28 @@ enum PassportSeeder {
             value: tickerText
         )
 
-        // Full name split into value + subtitles so each part goes on its own line.
-        // All UPPERCASED — matches the original Diia bottom heading.
+        // Full name on one headingLabel, multi-line via \n, all UPPERCASED.
+        // Why all in 'value' instead of value+subtitles?
+        //   DSHeadingWithSubtitleView renders 'value' with the large
+        //   'headingFont' (~21pt) and 'subtitles' with the much smaller
+        //   'FontBook.bigText' (~14pt). Putting everything in 'value'
+        //   guarantees all three name parts are the same size.
         let surnameUpp = f.surname.uppercased()
         let firstNameUpp = f.firstName.uppercased()
         let middleNameUpp = f.middleName.uppercased()
 
-        // If surname is empty, fall back to whatever was typed (so the
-        // bottomHeading isn't an empty line on first launch).
-        let bottomValue = surnameUpp.isEmpty ? "ПРІЗВИСЬКО" : surnameUpp
-        var bottomSubtitles: [String] = []
-        if !firstNameUpp.isEmpty { bottomSubtitles.append(firstNameUpp) }
-        if !middleNameUpp.isEmpty { bottomSubtitles.append(middleNameUpp) }
-        if bottomSubtitles.isEmpty { bottomSubtitles = ["ІМ’Я", "ПО БАТЬКОВІ"] }
+        let nameLines: [String]
+        if surnameUpp.isEmpty && firstNameUpp.isEmpty && middleNameUpp.isEmpty {
+            nameLines = ["ПРІЗВИСЬКО", "ІМ’Я", "ПО БАТЬКОВІ"]
+        } else {
+            nameLines = [surnameUpp, firstNameUpp, middleNameUpp].filter { !$0.isEmpty }
+        }
+        let bottomValue = nameLines.joined(separator: "\n")
 
         let bottomHeading = DSDocumentHeading(
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
                 value: bottomValue,
-                subtitles: bottomSubtitles
+                subtitles: nil
             )
         )
 

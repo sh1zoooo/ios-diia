@@ -41,13 +41,12 @@ enum DriverLicenseSeeder {
             headingWithSubtitlesMlc: nil
         )
 
-        // Ticker text MUST be longer than the ticker container width (~340pt),
-        // otherwise DSTickerView.adjustLabelSize() will loop the text:
-        //   while label.intrinsicContentSize.width < frame.width { text += text }
-        // producing "Документ дійснийДокумент дійсний...".
-        // The user explicitly asked for the format below — same sentence twice,
-        // joined by ' • '. This guarantees a long-enough string so the marquee
-        // animation never loops the text.
+        // Ticker text. DSTickerView.adjustLabelSize() duplicates the text while
+        // it's shorter than the ticker frame, and once more for the marquee.
+        // If our value is "A • B", duplicating it produces "A • BA • B" — the
+        // two halves get glued without a separator.
+        // Fix: end the value with " • " so every duplicate glues cleanly:
+        //   "... • unit • unit • unit • ..."
         let now = Date()
         let timeStr = format(now, "HH:mm")
         let dateStr = format(now, "dd.MM.yyyy")
@@ -55,7 +54,7 @@ enum DriverLicenseSeeder {
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "\(unit) • \(unit)"
+            value: "\(unit) • "
         )
 
         let bottomHeading = DSDocumentHeading(
