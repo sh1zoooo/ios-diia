@@ -68,7 +68,14 @@ class DocumentsProcessor {
     /// `DriverLicenseViewModel` from DiiaDocuments, just with a different `docType`.
     private func processDocs(licenses: DSFullDocumentModel?, docType: DocType) -> [DocumentModel] {
         let documents: [DocumentModel] = licenses?.data.filter({ $0.docData.validUntil == nil }).map {
-            ForkDocumentViewModelFactory(docType: docType).createViewModel(model: $0)
+            let vm = ForkDocumentViewModelFactory(docType: docType).createViewModel(model: $0)
+            // FORK: hook the kebab-button overlay onto the freshly built frontView.
+            // The frontView is lazy, so accessing it here forces its creation —
+            // which is fine, it would happen anyway when the Documents tab renders.
+            if let dsView = vm.frontView as? DSDocumentWithPhotoView {
+                dsView.forkHookOnFirstLayout()
+            }
+            return vm
         } ?? []
         return reorderIfNeeded(documents: documents,
                                orderIds: DocumentReorderingService.shared.order(for: docType.rawValue))

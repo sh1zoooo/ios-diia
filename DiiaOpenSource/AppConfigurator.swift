@@ -34,10 +34,10 @@ class AppConfigurator {
         PassportSeeder.sync(storeHelper: storeHelper)
         BirthCertificateSeeder.sync(storeHelper: storeHelper)
 
-        // FORK: install kebab-button overlay swizzle on DSDocumentWithPhotoView
-        // so all three local cards (passport / birth-certificate / driver-license)
-        // show a black "⋯" button next to the bottomHeading, like the real Diia.
-        DSDocumentWithPhotoView.forkInstallKebabSwizzle()
+        // FORK: kebab-button overlay is installed per-instance from
+        // `DocumentsProcessor` via `forkHookOnFirstLayout()`. There is no
+        // global swizzle — the previous attempt swizzled UIView.layoutSubviews
+        // and crashed every layout pass in the app.
 
         FailableDecodableConfig.errorReporter = CrashlyticsErrorRecorder()
 

@@ -14,38 +14,68 @@ import DiiaDocumentsCommonTypes
 ///   `UIComponentsConfiguration.shared.imageProvider.imageForCode(...)` which
 ///   uses `Bundle.module` (the DiiaUIComponents SPM bundle). Our local asset
 ///   catalog is NOT visible there, so `iconAtm` would render an empty button.
-///   Rather than fork the SPM package, we just overlay our own UIButton
-///   via `layoutSubviews` swizzling on `DSDocumentWithPhotoView`.
+///   Rather than fork the SPM package, we just overlay our own UIButton.
 ///
 /// Implementation note:
-///   `DSDocumentWithPhotoView` is a `final public class` (cannot subclass),
-///   so we hook into `layoutSubviews` via the Objective-C runtime. The
-///   swizzle is installed once on app launch (see `forkInstallKebabSwizzle()`).
+///   `DSDocumentWithPhotoView` is a `final public class` (cannot subclass).
+///   We tried swizzling `layoutSubviews`, but `DSDocumentWithPhotoView` does
+///   NOT override it, so `class_getInstanceMethod` returned UIView's IMP and
+///   `method_exchangeImplementations` patched UIView globally — that crashed
+///   every layout pass in the app.
+///   The current approach uses KVO on `bounds` — when the view gets a non-zero
+///   size, we add the kebab button once. KVO is per-instance, so it cannot
+///   affect other UIView subclasses.
 
 // Top-level associated-object keys (Swift extensions can't have stored statics).
 private var forkKebabKey: UInt8 = 0
 private var forkKebabHandlerKey: UInt8 = 0
 private var forkBottomHeadingEnlargedKey: UInt8 = 0
+private var forkKebabBoundsObserverKey: UInt8 = 0
 
 extension DSDocumentWithPhotoView {
 
-    /// Idempotent installer — call once at app launch (e.g. from
-    /// `AppConfigurator.configureApp()`).
+    /// Idempotent installer — currently a no-op (kept for API compatibility
+    /// with AppConfigurator). The per-instance KVO hook in `forkHookOnFirstLayout`
+    /// is invoked automatically the first time each DSDocumentWithPhotoView
+    /// is configured.
     static func forkInstallKebabSwizzle() {
-        let originalSelector = #selector(layoutSubviews)
-        let swizzledSelector = #selector(forkLayoutSubviews)
-        guard
-            let originalMethod = class_getInstanceMethod(DSDocumentWithPhotoView.self, originalSelector),
-            let swizzledMethod = class_getInstanceMethod(DSDocumentWithPhotoView.self, swizzledSelector)
-        else { return }
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        // No global swizzle — see class doc for why.
+        // Per-instance KVO is set up in forkHookOnFirstLayout(), which is called
+        // from AppConfigurator after seeding each card.
     }
 
-    @objc private func forkLayoutSubviews() {
-        // After exchange, this calls the original layoutSubviews.
-        self.forkLayoutSubviews()
-        forkEnsureKebabButton()
-        forkEnlargeBottomHeadingFonts()
+    /// Call this on a freshly-created DSDocumentWithPhotoView instance to
+    /// install the kebab overlay once the view gets a non-zero frame.
+    /// Safe to call multiple times — only the first call installs the observer.
+    func forkHookOnFirstLayout() {
+        if objc_getAssociatedObject(self, &forkKebabBoundsObserverKey) != nil {
+            return
+        }
+
+        // If already has a non-zero size, add the kebab immediately.
+        if bounds.width > 0 && bounds.height > 0 {
+            forkEnsureKebabButton()
+            forkEnlargeBottomHeadingFonts()
+            return
+        }
+
+        // Otherwise observe bounds until the view gets a real frame.
+        let observer = self.observe(\.bounds, options: [.new]) { [weak self] _, _ in
+            guard let self = self else { return }
+            guard self.bounds.width > 0, self.bounds.height > 0 else { return }
+            // Defer to next runloop to ensure other layout is done.
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.forkEnsureKebabButton()
+                self.forkEnlargeBottomHeadingFonts()
+            }
+            // Stop observing after the first valid layout.
+            if let token = objc_getAssociatedObject(self, &forkKebabBoundsObserverKey) as? NSKeyValueObservation {
+                token.invalidate()
+                objc_setAssociatedObject(self, &forkKebabBoundsObserverKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
+        }
+        objc_setAssociatedObject(self, &forkKebabBoundsObserverKey, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     private func forkEnsureKebabButton() {
