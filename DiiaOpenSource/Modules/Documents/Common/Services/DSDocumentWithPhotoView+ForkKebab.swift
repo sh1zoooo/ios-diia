@@ -31,7 +31,6 @@ private var forkKebabKey: UInt8 = 0
 private var forkKebabHandlerKey: UInt8 = 0
 private var forkBottomHeadingEnlargedKey: UInt8 = 0
 private var forkKebabBoundsObserverKey: UInt8 = 0
-private var forkSignatureImageViewKey: UInt8 = 0
 
 extension DSDocumentWithPhotoView {
 
@@ -56,7 +55,6 @@ extension DSDocumentWithPhotoView {
         // If already has a non-zero size, add the kebab immediately.
         if bounds.width > 0 && bounds.height > 0 {
             forkEnsureKebabButton()
-            forkEnsureSignatureOverlay()
             forkEnlargeBottomHeadingFonts()
             return
         }
@@ -69,7 +67,6 @@ extension DSDocumentWithPhotoView {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.forkEnsureKebabButton()
-                self.forkEnsureSignatureOverlay()
                 self.forkEnlargeBottomHeadingFonts()
             }
             // Stop observing after the first valid layout.
@@ -120,61 +117,6 @@ extension DSDocumentWithPhotoView {
         forkKebabHandler = { [weak self] in
             self?.contextMenuCallback?()
         }
-    }
-
-    /// FORK: overlays the user's hand-drawn signature (PNG from
-    /// PassportStorage) BELOW the "Номер:" field of the two-column table block.
-    /// DSDocumentWithPhotoView has no built-in slot for a signature —
-    /// DSDocumentContentData.signature exists in the enum but the view never
-    /// renders it. So we draw it ourselves.
-    ///
-    /// Placement: anchored to the bottom of the internal
-    /// DSTableBlockTwoColumnsPlaneOrgView (the photo + Date/Numer block),
-    /// 8pt below it, on the right side of the card. The signature sits
-    /// directly under the "Номер:" line and above the ticker.
-    ///
-    /// Only the Passport card has a signature — DriverLicense and
-    /// BirthCertificate don't, and this method is a no-op for those
-    /// (PassportStorage.shared.signatureImage returns nil).
-    private func forkEnsureSignatureOverlay() {
-        if let existing = objc_getAssociatedObject(self, &forkSignatureImageViewKey) as? UIImageView {
-            // Refresh the image in case the user re-drew the signature.
-            existing.image = PassportStorage.shared.signatureImage
-            self.bringSubviewToFront(existing)
-            return
-        }
-
-        guard let signature = PassportStorage.shared.signatureImage else { return }
-
-        // Find the internal DSTableBlockTwoColumnsPlaneOrgView to anchor below it.
-        // DSDocumentWithPhotoView holds it as a private subview, but it's a public
-        // class so we can locate it via the subview tree.
-        guard let tableBlock = subviewsRecursive().first(where: { $0 is DSTableBlockTwoColumnsPlaneOrgView }) else {
-            // If we can't find the table block yet (e.g. configure() hasn't run),
-            // fall back to a reasonable position above the ticker.
-            return
-        }
-
-        let iv = UIImageView(image: signature)
-        iv.contentMode = .scaleAspectFit
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.backgroundColor = .clear
-        // Slight transparency so the signature looks like it's written on the
-        // card rather than pasted on top — matches the original Diia look.
-        iv.alpha = 0.85
-        addSubview(iv)
-
-        // Anchor: 8pt below the table block, on the right side of the card.
-        // Width 120 / height 40 so a typical signature is visible without
-        // overpowering the card layout.
-        NSLayoutConstraint.activate([
-            iv.widthAnchor.constraint(equalToConstant: 120),
-            iv.heightAnchor.constraint(equalToConstant: 40),
-            iv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            iv.topAnchor.constraint(equalTo: tableBlock.bottomAnchor, constant: 8)
-        ])
-
-        objc_setAssociatedObject(self, &forkSignatureImageViewKey, iv, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     private func forkEnlargeBottomHeadingFonts() {

@@ -51,14 +51,24 @@ enum PassportSeeder {
         )
 
         let hasPhoto = PassportStorage.shared.photoBase64 != nil
+        let hasSignature = PassportStorage.shared.signaturePNGBase64 != nil
 
         // 2 fields, "Дата\nнародження:" wraps to 2 lines as in original Diia.
+        // The "Номер:" field carries valueImage: .signature — this tells
+        // DSTableBlockTwoColumnsPlaneOrgView to render the signature image
+        // (taken from `content[]` where code == .signature) next to the
+        // number value. This is exactly how the real Diia passport card
+        // displays the signature.
         let twoColumns = DSTableBlockTwoColumnPlaneOrg(
             photo: hasPhoto ? DSDocumentContentData.photo.rawValue : nil,
             photoUrl: nil,
             items: [
                 .init(tableItemVerticalMlc: .init(label: "Дата\nнародження:", value: f.birthDate)),
-                .init(tableItemVerticalMlc: .init(label: "Номер:", value: f.number))
+                .init(tableItemVerticalMlc: .init(
+                    label: "Номер:",
+                    value: f.number,
+                    valueImage: hasSignature ? .signature : nil
+                ))
             ],
             headingWithSubtitlesMlc: nil
         )
@@ -123,14 +133,22 @@ enum PassportSeeder {
 
         let docData = DSDocData(docName: "Паспорт громадянина України")
 
-        // ONLY the photo goes into `content[]`. The signature is intentionally
-        // excluded — `DSDocumentContentData.signature` exists in the enum but
-        // is never rendered anywhere by DSDocumentWithPhotoView, so pushing
-        // it as `.photo` caused the signature to be displayed as the main
-        // document photo.
-        let content: [DSDocumentContent]? = PassportStorage.shared.photoBase64.map {
-            [DSDocumentContent(image: $0, code: .photo)]
+        // Build content[] — both photo (.photo) and signature (.signature).
+        // DSTableBlockTwoColumnsPlaneOrgView.configure() reads images via the
+        // DocumentImageResolver(imagesContent:) dictionary, keyed by
+        // DSDocumentContentData. The view then renders:
+        //   - .photo    -> the big left-side photo block (via setupPhotoView)
+        //   - .signature -> a small image next to the "Номер:" field value
+        //                  (because that field has valueImage: .signature)
+        // This is exactly the layout of the original Diia passport card.
+        var contentItems: [DSDocumentContent] = []
+        if let photoB64 = PassportStorage.shared.photoBase64 {
+            contentItems.append(DSDocumentContent(image: photoB64, code: .photo))
         }
+        if let signatureB64 = PassportStorage.shared.signaturePNGBase64 {
+            contentItems.append(DSDocumentContent(image: signatureB64, code: .signature))
+        }
+        let content: [DSDocumentContent]? = contentItems.isEmpty ? nil : contentItems
 
         let documentData = DSDocumentData(
             docStatus: 200,
