@@ -246,9 +246,11 @@
 		8A0E40A492A55C10C524FBFA /* PassportEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAA4FB38CD1ABF71440EC12 /* PassportEditViewController.swift */; };
 		9515437DB900877AAD5D7FD9 /* ProfileModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C4410BB173723540A4B6A /* ProfileModule.swift */; };
 		A4474A9687DA5FCE95DC073B /* PassportSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD043F1834114DB599A7B25 /* PassportSeeder.swift */; };
+		BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */; };
 		C53E055544D49C372A9CCBDB /* DriverLicenseEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */; };
 		CB4209042E9D24EE00266703 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = CB4209032E9D24EE00266703 /* Collections */; };
 		CB42090B2E9D272C00266703 /* LinkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB42090A2E9D272C00266703 /* LinkResponse.swift */; };
+		CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */; };
 		D4A145D49A7E92DC5B775D78 /* PassportEditModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6643BD80CAE856EFC5B8CA /* PassportEditModule.swift */; };
 		E6244AB893A3958CDD141EC8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82054AD0B6E0732178A76973 /* ProfileViewController.swift */; };
 		F96CE46B2C0D63B190DDACC1 /* DriverLicenseEditModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */; };
@@ -259,6 +261,7 @@
 		0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseStorage.swift; sourceTree = "<group>"; };
 		1BAE4078AC589B14741EEFFE /* DocumentVisibilityStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentVisibilityStorage.swift; sourceTree = "<group>"; };
 		20AF4613AEF6BA7D33EE7653 /* BirthCertificateStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateStorage.swift; sourceTree = "<group>"; };
+		25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureEditorModule.swift; sourceTree = "<group>"; };
 		332236032B87927700E6B7AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3329AF682B29F928004B8517 /* AuthorizationContext+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthorizationContext+Extension.swift"; sourceTree = "<group>"; };
 		3329AF6A2B29F944004B8517 /* UserAuthorizationErrorRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthorizationErrorRouter.swift; sourceTree = "<group>"; };
@@ -492,6 +495,7 @@
 		CB42090A2E9D272C00266703 /* LinkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkResponse.swift; sourceTree = "<group>"; };
 		D3A841ABA0652AF6B83C9830 /* BirthCertificateEditModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateEditModule.swift; sourceTree = "<group>"; };
 		DE0C4410BB173723540A4B6A /* ProfileModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModule.swift; sourceTree = "<group>"; };
+		E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureEditorViewController.swift; sourceTree = "<group>"; };
 		FA2C468CBE2F9C9110F557F7 /* ProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePresenter.swift; sourceTree = "<group>"; };
 		FA5D40BB992CCB414E1BA718 /* BirthCertificateEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateEditViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1435,6 +1439,8 @@
 				FA5D40BB992CCB414E1BA718 /* BirthCertificateEditViewController.swift */,
 				D3A841ABA0652AF6B83C9830 /* BirthCertificateEditModule.swift */,
 				55B942739992777B34013115 /* ForkDocumentViewModelFactory.swift */,
+				E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */,
+				25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1854,6 +1860,8 @@
 				F9C949F8A2126D4E0D572BFF /* BirthCertificateEditViewController.swift in Sources */,
 				08A0433DAECE187FCF475534 /* BirthCertificateEditModule.swift in Sources */,
 				80C842DCAF9E535A95F055C1 /* ForkDocumentViewModelFactory.swift in Sources */,
+				BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */,
+				CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

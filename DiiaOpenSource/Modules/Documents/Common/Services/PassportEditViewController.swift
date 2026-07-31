@@ -35,6 +35,16 @@ final class PassportEditViewController: UIViewController {
     private let issuedByField    = PassportEditViewController.makeField(placeholder: "Ким виданий")
     private let issuedDateField  = PassportEditViewController.makeField(placeholder: "Дата видачі (напр. 20.05.2016)")
 
+    private let signatureButton: UIButton = {
+        let b = UIButton(type: .system)
+        b.setTitle("Намалювати підпис", for: .normal)
+        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        b.backgroundColor = .secondarySystemBackground
+        b.layer.cornerRadius = 12
+        b.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        return b
+    }()
+
     private lazy var textFields: [UITextField] = [
         surnameField, firstNameField, middleNameField, birthDateField,
         numberField, recordNumberField, issuedByField, issuedDateField
@@ -58,6 +68,7 @@ final class PassportEditViewController: UIViewController {
         loadCurrentValues()
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         photoButton.addTarget(self, action: #selector(photoTapped), for: .touchUpInside)
+        signatureButton.addTarget(self, action: #selector(signatureTapped), for: .touchUpInside)
         textFields.forEach { $0.delegate = self }
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -98,6 +109,7 @@ final class PassportEditViewController: UIViewController {
         photoWrapper.alignment = .center
         stackView.addArrangedSubview(photoWrapper)
         textFields.forEach { stackView.addArrangedSubview($0) }
+        stackView.addArrangedSubview(signatureButton)
     }
 
     private func loadCurrentValues() {
@@ -149,6 +161,12 @@ final class PassportEditViewController: UIViewController {
         picker.delegate = self
         picker.allowsEditing = true
         present(picker, animated: true)
+    }
+
+    @objc private func signatureTapped() {
+        // Push the signature editor inside the same navigation stack so the
+        // user comes back to this form after saving.
+        navigationController?.pushViewController(SignatureEditorViewController(), animated: true)
     }
 
     @objc private func saveTapped() {

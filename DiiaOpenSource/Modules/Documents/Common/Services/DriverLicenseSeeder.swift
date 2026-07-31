@@ -41,15 +41,13 @@ enum DriverLicenseSeeder {
             headingWithSubtitlesMlc: nil
         )
 
-        let now = Date()
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
+        // IMPORTANT: no date in here. The Diia UI appends its own
+        // "• Документ оновлено о HH:mm | dd.MM.yyyy" using `currentDate`,
+        // so duplicating it caused the "2026Документ" glue bug.
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "Документ оновлено о \(timeFormatter.string(from: now)) | \(dateFormatter.string(from: now))"
+            value: "Документ дійсний"
         )
 
         let bottomHeading = DSDocumentHeading(

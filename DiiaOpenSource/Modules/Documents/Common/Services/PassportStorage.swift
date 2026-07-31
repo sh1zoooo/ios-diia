@@ -19,6 +19,7 @@ final class PassportStorage {
         static let issuedDate  = "fork.passport.issuedDate"
         static let validUntil  = "fork.passport.validUntil" // for ID-card format
         static let recordNumber = "fork.passport.recordNumber" // номер запису (паспорт ІД)
+        static let signaturePNG = "fork.passport.signaturePNG" // base64 PNG of the user's hand-drawn signature
     }
 
     private init() {}
@@ -36,6 +37,40 @@ final class PassportStorage {
     var fullName: String {
         let parts = [surname, firstName, middleName].filter { !$0.isEmpty }
         return parts.joined(separator: " ")
+    }
+
+    /// Each name component uppercased — for the bottomHeading which uses ALL-CAPS
+    /// in the original Diia (e.g. "САМУСЕНКО АЛІСА ОЛЕКСАНДРІВНА").
+    var fullNameUppercased: String {
+        let parts = [surname, firstName, middleName]
+            .filter { !$0.isEmpty }
+            .map { $0.uppercased() }
+        return parts.joined(separator: "\n")
+    }
+
+    // MARK: - Signature (hand-drawn PNG, base64)
+    /// Stores the user's finger-drawn signature as a base64-encoded PNG string.
+    /// `nil` means no signature saved yet.
+    var signaturePNGBase64: String? {
+        get { defaults.string(forKey: Keys.signaturePNG) }
+        set { defaults.set(newValue, forKey: Keys.signaturePNG) }
+    }
+
+    var signatureImage: UIImage? {
+        guard let b64 = signaturePNGBase64,
+              let data = Data(base64Encoded: b64) else { return nil }
+        return UIImage(data: data)
+    }
+
+    func saveSignature(_ image: UIImage) {
+        // Trim alpha to keep the PNG small.
+        if let png = image.pngData() {
+            signaturePNGBase64 = png.base64EncodedString()
+        }
+    }
+
+    func clearSignature() {
+        defaults.removeObject(forKey: Keys.signaturePNG)
     }
 
     // MARK: - Photo
