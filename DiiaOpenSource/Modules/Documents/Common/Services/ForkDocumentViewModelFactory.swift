@@ -1,6 +1,7 @@
 import Foundation
 import DiiaDocuments
 import DiiaDocumentsCommonTypes
+import DiiaUIComponents
 
 /// FORK: a small wrapper that builds a `DriverLicenseViewModel` for ANY of the
 /// fork's local document types (passport / birth-certificate / driver-license).

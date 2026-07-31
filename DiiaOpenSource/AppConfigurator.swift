@@ -33,6 +33,11 @@ class AppConfigurator {
         PassportSeeder.sync(storeHelper: storeHelper)
         BirthCertificateSeeder.sync(storeHelper: storeHelper)
 
+        // FORK: install kebab-button overlay swizzle on DSDocumentWithPhotoView
+        // so all three local cards (passport / birth-certificate / driver-license)
+        // show a black "⋯" button next to the bottomHeading, like the real Diia.
+        DSDocumentWithPhotoView.forkInstallKebabSwizzle()
+
         FailableDecodableConfig.errorReporter = CrashlyticsErrorRecorder()
 
         // Adjusting DiiaNetwork.NetworkConfiguration must precede any work with packages

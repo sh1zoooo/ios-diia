@@ -64,10 +64,14 @@ enum PassportSeeder {
 
         // Build a long marquee text. Without the time+date, DSTickerView will
         // triple the short text and you'd see "Документ дійснийДокумент дійсний...".
+        // The user explicitly asked for the format below — same sentence twice,
+        // joined by ' • '. This guarantees a long-enough string so the marquee
+        // animation never loops the text.
         let now = Date()
         let timeStr = format(now, "HH:mm")
         let dateStr = format(now, "dd.MM.yyyy")
-        let tickerText = "Документ дійсний на \(timeStr) | \(dateStr) • єДокумент має юридичну силу"
+        let unit = "Документ оновлено о \(timeStr) | \(dateStr)"
+        let tickerText = "\(unit) • \(unit)"
 
         let ticker = DSTickerAtom(
             usage: .document,

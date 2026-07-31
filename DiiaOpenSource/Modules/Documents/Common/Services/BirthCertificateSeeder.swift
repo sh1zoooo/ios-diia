@@ -31,15 +31,17 @@ enum BirthCertificateSeeder {
         // otherwise DSTickerView.adjustLabelSize() will loop the text:
         //   while label.intrinsicContentSize.width < frame.width { text += text }
         // producing "Документ дійснийДокумент дійсний...".
-        // Long sentence with current time + date fixes both this loop AND
-        // the previous "2026Документ" glue bug (we control the whole string now).
+        // The user explicitly asked for the format below — same sentence twice,
+        // joined by ' • '. This guarantees a long-enough string so the marquee
+        // animation never loops the text.
         let now = Date()
         let timeStr = format(now, "HH:mm")
         let dateStr = format(now, "dd.MM.yyyy")
+        let unit = "Документ оновлено о \(timeStr) | \(dateStr)"
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "Документ дійсний на \(timeStr) | \(dateStr) • єДокумент має юридичну силу"
+            value: "\(unit) • \(unit)"
         )
 
         let bottomHeading = DSDocumentHeading(
