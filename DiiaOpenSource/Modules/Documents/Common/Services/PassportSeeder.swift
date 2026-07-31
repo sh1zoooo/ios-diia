@@ -7,15 +7,35 @@ import DiiaUIComponents
 /// `DocumentVisibilityStorage.isVisible(.passport) == true`.
 ///
 /// Layout decisions (matched to the original Diia on 2026-07-31):
-///   - heading "Паспорт громадянина\nУкраїни" — newline so it wraps to 2 lines
-///   - only 2 fields on the card: "Дата народження" + "Номер"
-///   - bottomHeading uses ALL-CAPS multi-line full name:
-///     "САМУСЕНКО\nАЛІСА\nОЛЕКСАНДРІВНА"
-///   - ticker text is just "Документ дійсний" — the Diia UI appends
-///     "• Документ оновлено о HH:mm | dd.MM.yyyy" automatically from `currentDate`,
-///     so we must NOT duplicate the date here (that caused the "2026Документ" glue bug).
-///   - signature image (if set) is attached via the second `DSDocumentContent` item
-///     with code `.signature` (or falls back to `.photo` if the enum doesn't have it).
+///
+/// 1. Heading "Паспорт громадянина\nУкраїни" — `\n` forces the heading label
+///    (which has `numberOfLines = 3`) to wrap onto 2 lines, exactly like the
+///    original Diia card.
+///
+/// 2. Only 2 fields on the card: "Дата\nнародження:" + "Номер:". The `\n` inside
+///    the label works because DSTableItemVerticalMlc passes the label string
+///    straight to a UILabel that supports multi-line. The ":" is kept to match
+///    the original Diia look.
+///
+/// 3. Bottom heading: each component of the FULL NAME on its own line,
+///    UPPERCASED. Done via DSHeadingWithSubtitlesModel:
+///      value:     "САМУСЕНКО"           <- surname (large, bold)
+///      subtitles: ["АЛІСА", "ОЛЕКСАНДРІВНА"]  <- first + middle name (smaller)
+///    This is exactly how the real Diia card stacks the name in the bottom-left.
+///
+/// 4. Ticker text MUST be longer than the visible ticker width (~340pt),
+///    because DSTickerView has a marquee animation that loops the text while
+///    it's shorter than the container:
+///        while label.intrinsicContentSize.width < frame.width { text += text }
+///    A short text like "Документ дійсний" was being tripled, producing
+///    "Документ дійснийДокумент дійснийДокумент дійсний...".
+///    We use a long, real-looking sentence with the current time and date.
+///
+/// 5. Signature: stored in PassportStorage.signaturePNGBase64. We do NOT push
+///    it into `content[]` (which only supports `.photo` on the actual card UI)
+///    — that caused the signature to be rendered as the main photo. The
+///    signature is still accessible from the Passport edit form for viewing
+///    and re-drawing.
 enum PassportSeeder {
 
     static func sync(storeHelper: StoreHelperProtocol = StoreHelper.instance) {
@@ -31,30 +51,48 @@ enum PassportSeeder {
 
         let hasPhoto = PassportStorage.shared.photoBase64 != nil
 
-        // Only the 2 fields shown on the real Diia passport card.
+        // 2 fields, "Дата\nнародження:" wraps to 2 lines as in original Diia.
         let twoColumns = DSTableBlockTwoColumnPlaneOrg(
             photo: hasPhoto ? DSDocumentContentData.photo.rawValue : nil,
             photoUrl: nil,
             items: [
-                .init(tableItemVerticalMlc: .init(label: "Дата народження", value: f.birthDate)),
-                .init(tableItemVerticalMlc: .init(label: "Номер", value: f.number))
+                .init(tableItemVerticalMlc: .init(label: "Дата\nнародження:", value: f.birthDate)),
+                .init(tableItemVerticalMlc: .init(label: "Номер:", value: f.number))
             ],
             headingWithSubtitlesMlc: nil
         )
 
-        // IMPORTANT: no date in here. The Diia UI appends its own
-        // "• Документ оновлено о HH:mm | dd.MM.yyyy" using `currentDate`.
+        // Build a long marquee text. Without the time+date, DSTickerView will
+        // triple the short text and you'd see "Документ дійснийДокумент дійсний...".
+        let now = Date()
+        let timeStr = format(now, "HH:mm")
+        let dateStr = format(now, "dd.MM.yyyy")
+        let tickerText = "Документ дійсний на \(timeStr) | \(dateStr) • єДокумент має юридичну силу"
+
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "Документ дійсний"
+            value: tickerText
         )
 
-        // All-caps, multi-line full name.
+        // Full name split into value + subtitles so each part goes on its own line.
+        // All UPPERCASED — matches the original Diia bottom heading.
+        let surnameUpp = f.surname.uppercased()
+        let firstNameUpp = f.firstName.uppercased()
+        let middleNameUpp = f.middleName.uppercased()
+
+        // If surname is empty, fall back to whatever was typed (so the
+        // bottomHeading isn't an empty line on first launch).
+        let bottomValue = surnameUpp.isEmpty ? "ПРІЗВИСЬКО" : surnameUpp
+        var bottomSubtitles: [String] = []
+        if !firstNameUpp.isEmpty { bottomSubtitles.append(firstNameUpp) }
+        if !middleNameUpp.isEmpty { bottomSubtitles.append(middleNameUpp) }
+        if bottomSubtitles.isEmpty { bottomSubtitles = ["ІМ’Я", "ПО БАТЬКОВІ"] }
+
         let bottomHeading = DSDocumentHeading(
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
-                value: PassportStorage.shared.fullNameUppercased,
-                subtitles: nil
+                value: bottomValue,
+                subtitles: bottomSubtitles
             )
         )
 
@@ -67,23 +105,20 @@ enum PassportSeeder {
 
         let docData = DSDocData(docName: "Паспорт громадянина України")
 
-        // Photo + optional signature as document content items.
-        var content: [DSDocumentContent] = []
-        if let photoB64 = PassportStorage.shared.photoBase64 {
-            content.append(DSDocumentContent(image: photoB64, code: .photo))
+        // ONLY the photo goes into `content[]`. The signature is intentionally
+        // excluded — `DSDocumentContentData.signature` exists in the enum but
+        // is never rendered anywhere by DSDocumentWithPhotoView, so pushing
+        // it as `.photo` caused the signature to be displayed as the main
+        // document photo.
+        let content: [DSDocumentContent]? = PassportStorage.shared.photoBase64.map {
+            [DSDocumentContent(image: $0, code: .photo)]
         }
-        if let signatureB64 = PassportStorage.shared.signaturePNGBase64 {
-            // DSDocumentContentData may not have a `.signature` case in this
-            // version of the package; fall back to `.photo` so it still renders.
-            content.append(DSDocumentContent(image: signatureB64, code: .photo))
-        }
-        let contentArr: [DSDocumentContent]? = content.isEmpty ? nil : content
 
         let documentData = DSDocumentData(
             docStatus: 200,
             id: "fork.passport",
             docNumber: f.number,
-            content: contentArr,
+            content: content,
             docData: docData,
             frontCard: DSDocumentFrontCard(UA: [frontCardModel], EN: [frontCardModel])
         )
@@ -96,5 +131,11 @@ enum PassportSeeder {
         )
 
         storeHelper.save(model, type: DSFullDocumentModel.self, forKey: .passport)
+    }
+
+    private static func format(_ date: Date, _ format: String) -> String {
+        let f = DateFormatter()
+        f.dateFormat = format
+        return f.string(from: date)
     }
 }

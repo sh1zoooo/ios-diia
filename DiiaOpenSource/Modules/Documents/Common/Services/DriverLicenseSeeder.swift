@@ -41,13 +41,19 @@ enum DriverLicenseSeeder {
             headingWithSubtitlesMlc: nil
         )
 
-        // IMPORTANT: no date in here. The Diia UI appends its own
-        // "• Документ оновлено о HH:mm | dd.MM.yyyy" using `currentDate`,
-        // so duplicating it caused the "2026Документ" glue bug.
+        // Ticker text MUST be longer than the ticker container width (~340pt),
+        // otherwise DSTickerView.adjustLabelSize() will loop the text:
+        //   while label.intrinsicContentSize.width < frame.width { text += text }
+        // producing "Документ дійснийДокумент дійсний...".
+        // A long sentence with current time + date fixes both this loop AND
+        // the previous "2026Документ" glue bug (we control the whole string now).
+        let now = Date()
+        let timeStr = format(now, "HH:mm")
+        let dateStr = format(now, "dd.MM.yyyy")
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "Документ дійсний"
+            value: "Документ дійсний на \(timeStr) | \(dateStr) • єДокумент має юридичну силу"
         )
 
         let bottomHeading = DSDocumentHeading(
@@ -87,5 +93,11 @@ enum DriverLicenseSeeder {
         )
 
         storeHelper.save(model, type: DSFullDocumentModel.self, forKey: .driverLicense)
+    }
+
+    private static func format(_ date: Date, _ format: String) -> String {
+        let f = DateFormatter()
+        f.dateFormat = format
+        return f.string(from: date)
     }
 }
