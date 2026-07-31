@@ -1,5 +1,6 @@
 import UIKit
 import DiiaUIComponents
+import DiiaDocumentsCommonTypes
 
 /// FORK: extension that adds a black circular "⋯" (kebab) button to
 /// `DSDocumentWithPhotoView` after it's been laid out, positioned next to

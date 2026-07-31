@@ -246,7 +246,6 @@
 		8A0E40A492A55C10C524FBFA /* PassportEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAA4FB38CD1ABF71440EC12 /* PassportEditViewController.swift */; };
 		9515437DB900877AAD5D7FD9 /* ProfileModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C4410BB173723540A4B6A /* ProfileModule.swift */; };
 		9A9B416C8BDAE25C7F0A17B8 /* DSDocumentWithPhotoView+ForkKebab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */; };
-		9F9341938748121E515521EC /* ForkDocumentCardWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04244BBACD4BC381F028C49 /* ForkDocumentCardWrapper.swift */; };
 		A4474A9687DA5FCE95DC073B /* PassportSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD043F1834114DB599A7B25 /* PassportSeeder.swift */; };
 		BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */; };
 		C53E055544D49C372A9CCBDB /* DriverLicenseEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */; };
@@ -493,7 +492,6 @@
 		82054AD0B6E0732178A76973 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseEditModule.swift; sourceTree = "<group>"; };
 		8D6643BD80CAE856EFC5B8CA /* PassportEditModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassportEditModule.swift; sourceTree = "<group>"; };
-		A04244BBACD4BC381F028C49 /* ForkDocumentCardWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkDocumentCardWrapper.swift; sourceTree = "<group>"; };
 		AB774B0098D1AEDF317F53A3 /* BirthCertificateSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateSeeder.swift; sourceTree = "<group>"; };
 		AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseEditViewController.swift; sourceTree = "<group>"; };
 		CB42090A2E9D272C00266703 /* LinkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkResponse.swift; sourceTree = "<group>"; };
@@ -1446,7 +1444,6 @@
 				E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */,
 				25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */,
 				019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */,
-				A04244BBACD4BC381F028C49 /* ForkDocumentCardWrapper.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1869,7 +1866,6 @@
 				BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */,
 				CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */,
 				9A9B416C8BDAE25C7F0A17B8 /* DSDocumentWithPhotoView+ForkKebab.swift in Sources */,
-				9F9341938748121E515521EC /* ForkDocumentCardWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

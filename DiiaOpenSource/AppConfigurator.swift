@@ -5,6 +5,7 @@ import DiiaNetwork
 import DiiaCommonTypes
 import DiiaCommonServices
 import DiiaUIComponents
+import DiiaDocumentsCommonTypes
 
 class AppConfigurator {
     static var storeHelper: StoreHelperProtocol = StoreHelper.instance
