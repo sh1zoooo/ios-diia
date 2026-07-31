@@ -116,14 +116,14 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
         qrImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(qrImageView)
 
-        // QR fills almost the entire card — small symmetric padding so the
-        // corner radius doesn't clip the QR edges. This matches the original
-        // Diia screenshot: pure QR on white, nothing else.
+        // QR sized to ~80% of the card width — bigger than the original 60%
+        // 'medium' size, but smaller than the full-card version. Centered both
+        // horizontally and vertically on the white card.
         NSLayoutConstraint.activate([
-            qrImageView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            qrImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            qrImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            qrImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            qrImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            qrImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            qrImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
+            qrImageView.heightAnchor.constraint(equalTo: qrImageView.widthAnchor),
         ])
 
         // Tap on the QR opens the URL
