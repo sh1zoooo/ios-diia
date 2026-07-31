@@ -49,7 +49,7 @@ enum DriverLicenseSeeder {
         let ticker = DSTickerAtom(
             usage: .document,
             type: .positive,
-            value: "Документ дійсний на \(timeFormatter.string(from: now)) | \(dateFormatter.string(from: now)) • єДокумент має юридичну силу"
+            value: "Документ оновлено о \(timeFormatter.string(from: now)) | \(dateFormatter.string(from: now))"
         )
 
         let bottomHeading = DSDocumentHeading(

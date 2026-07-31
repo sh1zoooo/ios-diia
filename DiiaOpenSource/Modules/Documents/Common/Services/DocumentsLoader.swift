@@ -83,7 +83,17 @@ class DocumentsLoader: NSObject, DocumentsLoaderProtocol {
         for type in order {
             switch type {
             case .driverLicense:
+                // FORK: skip if hidden via visibility toggle (no need to refetch).
+                guard DocumentVisibilityStorage.shared.isVisible(.driverLicense) else { continue }
                 checkDoc(type: DSFullDocumentModel.self, docType: .driverLicense, storingKey: .driverLicense)
+            case .passport:
+                // FORK: skip if hidden via visibility toggle.
+                guard DocumentVisibilityStorage.shared.isVisible(.passport) else { continue }
+                checkDoc(type: DSFullDocumentModel.self, docType: .passport, storingKey: .passport)
+            case .birthCertificate:
+                // FORK: skip if hidden via visibility toggle.
+                guard DocumentVisibilityStorage.shared.isVisible(.birthCertificate) else { continue }
+                checkDoc(type: DSFullDocumentModel.self, docType: .birthCertificate, storingKey: .birthCertificate)
             case .taxpayerСard:
                 irrelevantDocs.append(DocType.taxpayerСard.rawValue)
             }

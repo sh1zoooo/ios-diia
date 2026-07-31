@@ -27,6 +27,11 @@ class AppConfigurator {
         // (cheap + idempotent), so it's always in sync with whatever the user entered
         // in Settings, even if StoreHelper was cleared for some other reason.
         DriverLicenseSeeder.sync(storeHelper: storeHelper)
+        // FORK: also seed the local-only passport and birth-certificate cards.
+        // Even if hidden in Settings, they stay in storage so toggling them on
+        // later shows the card without an app restart.
+        PassportSeeder.sync(storeHelper: storeHelper)
+        BirthCertificateSeeder.sync(storeHelper: storeHelper)
 
         FailableDecodableConfig.errorReporter = CrashlyticsErrorRecorder()
 

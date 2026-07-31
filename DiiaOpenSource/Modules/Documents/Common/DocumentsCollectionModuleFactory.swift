@@ -26,7 +26,9 @@ struct DocumentsCollectionModuleFactory {
                                      documentsStackRouterCreate: {
                                         DocumentsStackRouter(docType: $0, docProvider: DocumentsProcessor())
                                      },
-                                     actionFabricAllowedCodes: [DocType.driverLicense.docCode],
+                                     actionFabricAllowedCodes: [DocType.driverLicense.docCode,
+                                                                DocType.passport.docCode,
+                                                                DocType.birthCertificate.docCode],
                                      documentsReorderingConfiguration: reorderingConfig,
                                      pushNotificationsSharingSubject: PassthroughSubject<Void, Never>(),
                                      addDocumentsActionProvider: AddDocumentsActionProvider(),

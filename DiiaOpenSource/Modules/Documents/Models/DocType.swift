@@ -4,6 +4,9 @@ import DiiaDocumentsCommonTypes
 enum DocType: String, Codable, CaseIterable {
     case driverLicense = "driver-license"
     case taxpayerСard = "taxpayer-card"
+    // FORK: extra local-only document types.
+    case passport = "passport"
+    case birthCertificate = "birth-certificate"
 
     init?(rawValue: String) {
         switch rawValue {
@@ -11,6 +14,10 @@ enum DocType: String, Codable, CaseIterable {
             self = .driverLicense
         case "taxpayer-card", "taxpayerСard":
             self = .taxpayerСard
+        case "passport":
+            self = .passport
+        case "birth-certificate":
+            self = .birthCertificate
         default:
             return nil
         }
@@ -22,6 +29,10 @@ enum DocType: String, Codable, CaseIterable {
             return R.Strings.driver_document_name.localized()
         case .taxpayerСard:
             return ""
+        case .passport:
+            return "Паспорт громадянина України"
+        case .birthCertificate:
+            return "Актовий запис про народження"
         }
     }
 
@@ -37,6 +48,8 @@ enum DocType: String, Codable, CaseIterable {
         switch self {
         case .driverLicense: return "driverLicense"
         case .taxpayerСard: return ""
+        case .passport: return "passport"
+        case .birthCertificate: return "birthCertificate"
         }
     }
 
@@ -46,6 +59,10 @@ enum DocType: String, Codable, CaseIterable {
             return .driverLicense
         case .taxpayerСard:
             return nil
+        case .passport:
+            return .passport
+        case .birthCertificate:
+            return .birthCertificate
         }
     }
 }

@@ -22,56 +22,73 @@ final class SettingsPresenter: SettingsAction {
     }
     
     private func prepareSettings() {
-        // FORK: only Profile + Documents order remain. Pincode and biometry
-        // don't make sense without a logged-in user, so they are hidden.
-        let settings: [SettingsViewModel] = [
+        // FORK: Profile + a "Картки документів" section with toggles for each
+        // local card + per-card edit row. Pincode / biometry remain hidden
+        // (no logged-in user).
+        var settings: [SettingsViewModel] = [
             .titled(
                 vm: TitleCellViewModel(
                     title: "Профіль",
                     iconName: R.image.menuDiiaID.name,
                     action: { [weak view] in view?.open(module: ProfileModule()) }
                 )
-            ),
-            .titled(
-                vm: TitleCellViewModel(
-                    title: "Посвідчення водія",
-                    iconName: R.image.orderIcon.name,
-                    action: { [weak view] in view?.open(module: DriverLicenseEditModule()) }
-                )
-            ),
-            .titled(
-                vm: TitleCellViewModel(
-                    title: R.Strings.settings_docs_order.localized(),
-                    iconName: R.image.orderIcon.name,
-                    action: { [weak view] in view?.open(module: DocumentsReorderingModule()) }
-                )
             )
         ]
 
-        self.settings = settings
-    }
-    
-    private func prepareBiometrySettingsViewModel() -> SwitchIconedViewModel? {
-        let biometryText: String
-        let biometryIcon: String
-        
-        switch BiometryHelper.biometricType() {
-        case .face:
-            biometryText = R.Strings.menu_allow_face_id.localized()
-            biometryIcon = R.image.menuFaceID.name
-        case .touch:
-            biometryText = R.Strings.menu_allow_touch_id.localized()
-            biometryIcon = R.image.menuTouchID.name
-        default:
-            return nil
+        // --- Картки документів: visibility toggles --------------------------------
+        for kind in DocumentVisibilityStorage.DocKind.allCases {
+            settings.append(
+                .switched(vm: SwitchIconedViewModel(
+                    title: kind.displayName,
+                    iconName: kind.iconName,
+                    isOn: DocumentVisibilityStorage.shared.isVisible(kind),
+                    onSwitch: { isOn in
+                        DocumentVisibilityStorage.shared.setVisible(isOn, for: kind)
+                        // Refresh the seeded card so the Documents tab picks up the
+                        // new visibility state without an app restart.
+                        switch kind {
+                        case .passport:           PassportSeeder.sync()
+                        case .birthCertificate:   BirthCertificateSeeder.sync()
+                        case .driverLicense:      DriverLicenseSeeder.sync()
+                        }
+                    }
+                ))
+            )
         }
-        
-        return SwitchIconedViewModel(title: biometryText,
-                               iconName: biometryIcon,
-                               isOn: settingsManager.isBiometryAllowed(),
-                               onSwitch: { [weak self] (isOn) in
-                                   self?.settingsManager.setBiometry(isAllowed: isOn)
-                               })
+
+        // --- Редагування карток ---------------------------------------------------
+        settings.append(.titled(
+            vm: TitleCellViewModel(
+                title: "Редагувати: Паспорт",
+                iconName: R.image.menuDiiaID.name,
+                action: { [weak view] in view?.open(module: PassportEditModule()) }
+            )
+        ))
+        settings.append(.titled(
+            vm: TitleCellViewModel(
+                title: "Редагувати: Актовий запис про народження",
+                iconName: R.image.orderIcon.name,
+                action: { [weak view] in view?.open(module: BirthCertificateEditModule()) }
+            )
+        ))
+        settings.append(.titled(
+            vm: TitleCellViewModel(
+                title: "Редагувати: Посвідчення водія",
+                iconName: R.image.orderIcon.name,
+                action: { [weak view] in view?.open(module: DriverLicenseEditModule()) }
+            )
+        ))
+
+        // --- Інші -----------------------------------------------------------------
+        settings.append(.titled(
+            vm: TitleCellViewModel(
+                title: R.Strings.settings_docs_order.localized(),
+                iconName: R.image.orderIcon.name,
+                action: { [weak view] in view?.open(module: DocumentsReorderingModule()) }
+            )
+        ))
+
+        self.settings = settings
     }
     
     // MARK: - SettingsAction

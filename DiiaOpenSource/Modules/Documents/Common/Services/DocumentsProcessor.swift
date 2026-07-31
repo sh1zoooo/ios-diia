@@ -18,8 +18,20 @@ class DocumentsProcessor {
         let documents = docTypesOrder.compactMap { docType -> MultiDataType<DocumentModel>? in
             switch docType {
             case .driverLicense:
+                // FORK: hidden via visibility toggle
+                guard DocumentVisibilityStorage.shared.isVisible(.driverLicense) else { return nil }
                 let driverLicense: DSFullDocumentModel? = storeHelper.getValue(forKey: .driverLicense)
-                return makeMultiple(cards: processDriverLicenses(licenses: driverLicense))
+                return makeMultiple(cards: processDocs(licenses: driverLicense, docType: .driverLicense))
+            case .passport:
+                // FORK: hidden via visibility toggle
+                guard DocumentVisibilityStorage.shared.isVisible(.passport) else { return nil }
+                let passport: DSFullDocumentModel? = storeHelper.getValue(forKey: .passport)
+                return makeMultiple(cards: processDocs(licenses: passport, docType: .passport))
+            case .birthCertificate:
+                // FORK: hidden via visibility toggle
+                guard DocumentVisibilityStorage.shared.isVisible(.birthCertificate) else { return nil }
+                let birthCert: DSFullDocumentModel? = storeHelper.getValue(forKey: .birthCertificate)
+                return makeMultiple(cards: processDocs(licenses: birthCert, docType: .birthCertificate))
             case .taxpayerСard:
                 return nil
             }
@@ -52,11 +64,14 @@ class DocumentsProcessor {
         return documents
     }
     
-    private func processDriverLicenses(licenses: DSFullDocumentModel?) -> [DocumentModel] {
+    /// FORK: unified processor for all local document types — uses the same
+    /// `DriverLicenseViewModel` from DiiaDocuments, just with a different `docType`.
+    private func processDocs(licenses: DSFullDocumentModel?, docType: DocType) -> [DocumentModel] {
         let documents: [DocumentModel] = licenses?.data.filter({ $0.docData.validUntil == nil }).map {
-            return DriverLicenseViewModelFactory().createViewModel(model: $0)
+            ForkDocumentViewModelFactory(docType: docType).createViewModel(model: $0)
         } ?? []
-        return reorderIfNeeded(documents: documents, orderIds: DocumentReorderingService.shared.order(for: DocType.driverLicense.rawValue))
+        return reorderIfNeeded(documents: documents,
+                               orderIds: DocumentReorderingService.shared.order(for: docType.rawValue))
     }
 }
 

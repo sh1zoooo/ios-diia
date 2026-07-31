@@ -23,6 +23,9 @@ enum StoringKey: String, CaseIterable {
     case mobileUID = "kKCMobileUID"
     
     case driverLicense = "kDSDriverLicense"
+    // FORK: extra local-only documents.
+    case passport = "kDSPassportFork"
+    case birthCertificate = "kDSBirthCertificateFork"
 
     case lastDocumentUpdate = "kUDLastDocumentUpdate"
     
@@ -62,7 +65,7 @@ final class StoreHelper: StoreHelperProtocol {
             switch storingKey {
             case .authToken, .authPincode, .randomKey, .logoutToken:
                 self = .keychain
-            case .driverLicense:
+            case .driverLicense, .passport, .birthCertificate:
                 self = .deviceStorage
             default:
                 self = .userDefaults
