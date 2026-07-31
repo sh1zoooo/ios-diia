@@ -194,14 +194,30 @@ private final class SignatureCanvasView: UIView {
         setNeedsDisplay()
     }
 
-    /// Renders the canvas to a UIImage — transparent background, black strokes.
+    /// Renders the canvas to a UIImage — WHITE background, black strokes.
+    ///
+    /// Why white instead of transparent?
+    ///   DSTableItemVerticalView.configure() calls
+    ///   `image.imageByMakingWhiteBackgroundTransparent()` on the signature
+    ///   image before scaling it. That function uses
+    ///   `copy(maskingColorComponents: [200,255,200,255,200,255])` which
+    ///   knocks out white-ish pixels but LEAVES already-transparent pixels
+    ///   alone. If we render with a transparent background, the masking pass
+    ///   is essentially a no-op AND the resulting image keeps its alpha
+    ///   channel — which for some reason makes the UIImageView in
+    ///   DSTableItemVerticalView render nothing visible.
+    ///   Rendering with a white background and letting Diia's masking pass
+    ///   make that white transparent matches the original Diia flow
+    ///   (their backend returns signature JPEGs with white backgrounds).
     func renderedImage() -> UIImage? {
         let size = bounds.size
         guard size.width > 0, size.height > 0 else { return nil }
 
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { ctx in
-            UIColor.clear.setFill()
+            // White background — Diia's imageByMakingWhiteBackgroundTransparent()
+            // will strip this in DSTableItemVerticalView.
+            UIColor.white.setFill()
             ctx.fill(CGRect(origin: .zero, size: size))
 
             if let bg = backgroundImage {
