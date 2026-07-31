@@ -31,7 +31,20 @@ struct ForkDocumentViewModelFactory {
                                            storeHelper: ForkDocumentStorageImpl(storage: StoreHelper.instance,
                                                                                  docType: docType),
                                            urlHandler: URLOpenerImpl())
-        return DriverLicenseViewModel(context: context)
+        let vm = DriverLicenseViewModel(context: context)
+
+        // FORK: force-inject the signature image into the viewModel's `images`
+        // dictionary. The default init reads `context.model.content?.forEach { ... }`
+        // — which DOES populate images[.signature] in theory, but for unclear
+        // reasons (possibly JSON-encoding round-trip losing the .signature case,
+        // or DocumentImageResolver not finding it) the signature was not showing
+        // up on the card. Injecting it directly here guarantees the dictionary
+        // has the entry before the frontView is built.
+        if docType == .passport, let signature = PassportStorage.shared.signatureImage {
+            vm.images[.signature] = signature
+        }
+
+        return vm
     }
 }
 

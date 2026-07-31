@@ -63,9 +63,23 @@ final class PassportStorage {
     }
 
     func saveSignature(_ image: UIImage) {
-        // Trim alpha to keep the PNG small.
-        if let png = image.pngData() {
-            signaturePNGBase64 = png.base64EncodedString()
+        // Encode as JPEG with white background. Why JPEG not PNG?
+        //   DSTableItemVerticalView applies imageByMakingWhiteBackgroundTransparent()
+        //   which uses cgImage.copy(maskingColorComponents:). That call requires
+        //   an image WITHOUT an alpha channel — PNG-with-alpha makes copy()
+        //   return nil and the whole chain silently produces no visible image.
+        //   JPEG has no alpha channel, so the masking works as intended:
+        //   white pixels → transparent, black strokes → visible.
+        //   We composite onto white first in case the input UIImage still
+        //   carries transparency from the renderer.
+        let renderer = UIGraphicsImageRenderer(size: image.size)
+        let composited = renderer.image { ctx in
+            UIColor.white.setFill()
+            ctx.fill(CGRect(origin: .zero, size: image.size))
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }
+        if let jpg = composited.jpegData(compressionQuality: 0.92) {
+            signaturePNGBase64 = jpg.base64EncodedString()
         }
     }
 
