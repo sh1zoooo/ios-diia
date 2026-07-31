@@ -69,10 +69,15 @@ final class ForkDocumentViewModelWrapper: DocumentModel {
 }
 
 /// FORK: offline QR back view for the document card.
-/// Renders a static QR code (no network call) encoding a fixed YouTube URL,
-/// plus the doc name as a title. Tapping the QR opens the URL in the system
-/// browser. Conforms to FlippableEmbeddedView so the cell's flip animation
-/// can drive willPresent/willHide/didHide.
+/// Renders a large QR code filling almost the entire card (matching the
+/// original Diia passport back-side layout — see user screenshot IMG_3903.jpeg:
+/// pure white background, QR takes the full card, no title/subtitle/icons).
+///
+/// The QR encodes a fixed YouTube URL. Tapping the QR opens the URL in the
+/// system browser.
+///
+/// Conforms to FlippableEmbeddedView so the cell's flip animation can drive
+/// willPresent / willHide / didHide.
 final class ForkQRBackView: UIView, FlippableEmbeddedView {
 
     private let docType: DocType
@@ -82,29 +87,12 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
     /// FORK: hard-coded YouTube link as requested by the user.
     private let qrURLString = "https://m.youtube.com/watch?v=AsrAF5CvnP4&list=RDAsrAF5CvnP4&start_radio=1&pp=ygUu0J_QtdC70YzQvNC40L3QuCDQvNCw0YHQu9C-INC00LDQvNCx0LvQuNC90LPQuKAHAQ%3D%3D&ra=m"
 
-    private let titleLabel: UILabel = {
-        let l = UILabel()
-        l.font = FontBook.cardsHeadingFont
-        l.numberOfLines = 0
-        l.textAlignment = .center
-        return l
-    }()
-
     private let qrImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
         iv.backgroundColor = .white
         iv.isUserInteractionEnabled = true
         return iv
-    }()
-
-    private let subtitleLabel: UILabel = {
-        let l = UILabel()
-        l.font = FontBook.bigText
-        l.textColor = .darkGray
-        l.numberOfLines = 0
-        l.textAlignment = .center
-        return l
     }()
 
     init(docType: DocType, flippingAction: @escaping Callback) {
@@ -125,31 +113,17 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
 
-        [titleLabel, qrImageView, subtitleLabel].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            addSubview($0)
-        }
+        qrImageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(qrImageView)
 
-        // Layout: title at top, QR centered horizontally AND vertically in the
-        // remaining space, subtitle below QR. Symmetric padding around the QR
-        // so it visually sits in the middle of the card.
+        // QR fills almost the entire card — small symmetric padding so the
+        // corner radius doesn't clip the QR edges. This matches the original
+        // Diia screenshot: pure QR on white, nothing else.
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 24),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-
-            // QR centered horizontally
-            qrImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            // QR centered vertically between the title and the subtitle
-            qrImageView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 8),
-            // QR size: 60% of card width, square
-            qrImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.6),
-            qrImageView.heightAnchor.constraint(equalTo: qrImageView.widthAnchor),
-
-            // Subtitle pinned to bottom, centered horizontally
-            subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
-            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            qrImageView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            qrImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+            qrImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            qrImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
         ])
 
         // Tap on the QR opens the URL
@@ -158,39 +132,8 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
     }
 
     private func fillContent() {
-        titleLabel.text = docType.name
-
         // QR encodes the hard-coded YouTube URL.
         qrImageView.image = .qrCode(from: qrURLString)
-
-        // Subtitle: doc number + full name (whichever is non-empty).
-        let docNumber: String
-        let subtitle: String
-        switch docType {
-        case .passport:
-            let s = PassportStorage.shared.snapshot()
-            docNumber = s.number
-            subtitle = PassportStorage.shared.fullName
-        case .birthCertificate:
-            let s = BirthCertificateStorage.shared.snapshot()
-            docNumber = s.recordNumber
-            subtitle = BirthCertificateStorage.shared.fullName
-        case .driverLicense:
-            let s = DriverLicenseStorage.shared.snapshot()
-            docNumber = s.number
-            subtitle = s.fullName
-        case .taxpayerСard:
-            docNumber = ""
-            subtitle = ""
-        }
-
-        var subtitleText = ""
-        if !subtitle.isEmpty { subtitleText += subtitle }
-        if !docNumber.isEmpty {
-            if !subtitleText.isEmpty { subtitleText += "\n" }
-            subtitleText += docNumber
-        }
-        subtitleLabel.text = subtitleText
     }
 
     @objc private func qrTapped() {
@@ -205,4 +148,5 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
     func didChangeFocus(isFocused: Bool) {}
     func changeVerificationView(for verificationType: VerificationType) {}
 }
+
 
