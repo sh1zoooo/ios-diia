@@ -3,6 +3,8 @@ import UIKit
 /// FORK: a small finger-drawing canvas the user opens from the Passport edit form.
 /// Lets the user draw their signature on a black-on-white background, then
 /// "Save" persists it as PNG into `PassportStorage` and "Clear" wipes the canvas.
+///
+/// Includes a brush-thickness slider (1pt ... 8pt) above the canvas.
 final class SignatureEditorViewController: UIViewController {
 
     private let canvasView = SignatureCanvasView()
@@ -15,6 +17,24 @@ final class SignatureEditorViewController: UIViewController {
         l.textAlignment = .center
         l.numberOfLines = 0
         return l
+    }()
+
+    private let brushThicknessLabel: UILabel = {
+        let l = UILabel()
+        l.text = "Товщина кисті: 3"
+        l.font = .systemFont(ofSize: 14, weight: .medium)
+        l.textColor = .black
+        l.textAlignment = .center
+        return l
+    }()
+
+    private let brushSlider: UISlider = {
+        let s = UISlider()
+        s.minimumValue = 1
+        s.maximumValue = 8
+        s.value = 3
+        s.isContinuous = true
+        return s
     }()
 
     private let clearButton: UIButton = {
@@ -54,6 +74,10 @@ final class SignatureEditorViewController: UIViewController {
         clearButton.addTarget(self, action: #selector(clearTapped), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+        brushSlider.addTarget(self, action: #selector(brushThicknessChanged(_:)), for: .valueChanged)
+
+        // Apply initial brush thickness from slider default.
+        canvasView.brushWidth = CGFloat(brushSlider.value)
 
         // If there's already a signature, preload it onto the canvas.
         if let existing = PassportStorage.shared.signatureImage {
@@ -62,7 +86,8 @@ final class SignatureEditorViewController: UIViewController {
     }
 
     private func setupLayout() {
-        [hintLabel, canvasView, clearButton, saveButton, cancelButton].forEach {
+        [hintLabel, brushThicknessLabel, brushSlider, canvasView,
+         clearButton, saveButton, cancelButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -75,7 +100,15 @@ final class SignatureEditorViewController: UIViewController {
             hintLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             hintLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
 
-            canvasView.topAnchor.constraint(equalTo: hintLabel.bottomAnchor, constant: 16),
+            brushThicknessLabel.topAnchor.constraint(equalTo: hintLabel.bottomAnchor, constant: 16),
+            brushThicknessLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            brushThicknessLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+
+            brushSlider.topAnchor.constraint(equalTo: brushThicknessLabel.bottomAnchor, constant: 8),
+            brushSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            brushSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+
+            canvasView.topAnchor.constraint(equalTo: brushSlider.bottomAnchor, constant: 16),
             canvasView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             canvasView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             canvasView.heightAnchor.constraint(equalTo: canvasView.widthAnchor, multiplier: 0.5),
@@ -90,6 +123,13 @@ final class SignatureEditorViewController: UIViewController {
             saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             saveButton.heightAnchor.constraint(equalToConstant: 52),
         ])
+    }
+
+    @objc private func brushThicknessChanged(_ slider: UISlider) {
+        let value = Int(slider.value.rounded())
+        brushThicknessLabel.text = "Товщина кисті: \(value)"
+        canvasView.brushWidth = CGFloat(slider.value)
+        canvasView.setNeedsDisplay()
     }
 
     @objc private func clearTapped() {
@@ -126,6 +166,9 @@ private final class SignatureCanvasView: UIView {
     /// starting image so the user can keep editing on top of it.
     private var backgroundImage: UIImage?
 
+    /// Brush thickness in points (1...8). Updated live from the slider.
+    var brushWidth: CGFloat = 3
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
@@ -152,14 +195,12 @@ private final class SignatureCanvasView: UIView {
     }
 
     /// Renders the canvas to a UIImage — transparent background, black strokes.
-    /// (We render with transparent bg so it overlays cleanly on the white card.)
     func renderedImage() -> UIImage? {
         let size = bounds.size
         guard size.width > 0, size.height > 0 else { return nil }
 
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { ctx in
-            // Transparent background.
             UIColor.clear.setFill()
             ctx.fill(CGRect(origin: .zero, size: size))
 
@@ -169,7 +210,7 @@ private final class SignatureCanvasView: UIView {
 
             UIColor.black.setStroke()
             let line = UIBezierPath()
-            line.lineWidth = 2.5
+            line.lineWidth = brushWidth
             line.lineCapStyle = .round
             line.lineJoinStyle = .round
 
@@ -185,13 +226,11 @@ private final class SignatureCanvasView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        // Background image first (if any).
         backgroundImage?.draw(in: rect)
 
-        // Draw strokes on top.
         UIColor.black.setStroke()
         let path = UIBezierPath()
-        path.lineWidth = 2.5
+        path.lineWidth = brushWidth
         path.lineCapStyle = .round
         path.lineJoinStyle = .round
 

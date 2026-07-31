@@ -123,10 +123,15 @@ extension DSDocumentWithPhotoView {
     }
 
     /// FORK: overlays the user's hand-drawn signature (PNG from
-    /// PassportStorage) in the bottom-right corner of the card, on top of
-    /// the bottomHeading area. DSDocumentWithPhotoView has no built-in slot
-    /// for a signature — DSDocumentContentData.signature exists in the enum
-    /// but the view never renders it. So we draw it ourselves.
+    /// PassportStorage) BELOW the "Номер:" field of the two-column table block.
+    /// DSDocumentWithPhotoView has no built-in slot for a signature —
+    /// DSDocumentContentData.signature exists in the enum but the view never
+    /// renders it. So we draw it ourselves.
+    ///
+    /// Placement: anchored to the bottom of the internal
+    /// DSTableBlockTwoColumnsPlaneOrgView (the photo + Date/Numer block),
+    /// 8pt below it, on the right side of the card. The signature sits
+    /// directly under the "Номер:" line and above the ticker.
     ///
     /// Only the Passport card has a signature — DriverLicense and
     /// BirthCertificate don't, and this method is a no-op for those
@@ -141,6 +146,15 @@ extension DSDocumentWithPhotoView {
 
         guard let signature = PassportStorage.shared.signatureImage else { return }
 
+        // Find the internal DSTableBlockTwoColumnsPlaneOrgView to anchor below it.
+        // DSDocumentWithPhotoView holds it as a private subview, but it's a public
+        // class so we can locate it via the subview tree.
+        guard let tableBlock = subviewsRecursive().first(where: { $0 is DSTableBlockTwoColumnsPlaneOrgView }) else {
+            // If we can't find the table block yet (e.g. configure() hasn't run),
+            // fall back to a reasonable position above the ticker.
+            return
+        }
+
         let iv = UIImageView(image: signature)
         iv.contentMode = .scaleAspectFit
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -150,14 +164,14 @@ extension DSDocumentWithPhotoView {
         iv.alpha = 0.85
         addSubview(iv)
 
-        // Position: above the kebab button, on the right side of the card.
-        // The bottomHeading (full name) takes the left half of the bottom ~80pt;
-        // the signature goes in the right half, just above the kebab button.
+        // Anchor: 8pt below the table block, on the right side of the card.
+        // Width 120 / height 40 so a typical signature is visible without
+        // overpowering the card layout.
         NSLayoutConstraint.activate([
-            iv.widthAnchor.constraint(equalToConstant: 90),
-            iv.heightAnchor.constraint(equalToConstant: 36),
-            iv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            iv.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -52)
+            iv.widthAnchor.constraint(equalToConstant: 120),
+            iv.heightAnchor.constraint(equalToConstant: 40),
+            iv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            iv.topAnchor.constraint(equalTo: tableBlock.bottomAnchor, constant: 8)
         ])
 
         objc_setAssociatedObject(self, &forkSignatureImageViewKey, iv, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
