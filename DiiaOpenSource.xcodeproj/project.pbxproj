@@ -125,6 +125,7 @@
 		42F93A5C2A022AA90072DDC1 /* Formatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F93A5B2A022AA90072DDC1 /* Formatter+Extension.swift */; };
 		45714C9E880627E29E7396EC /* BirthCertificateStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AF4613AEF6BA7D33EE7653 /* BirthCertificateStorage.swift */; };
 		47F44672814A88A5DFA66E1F /* DocumentVisibilityStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BAE4078AC589B14741EEFFE /* DocumentVisibilityStorage.swift */; };
+		481E435AA9778F6F67E11181 /* ForkDocumentViewModelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68684A60BE088AAE6C271436 /* ForkDocumentViewModelWrapper.swift */; };
 		4937CB9F2D95A7C00014D2BC /* FeedNewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4937CB972D95A7C00014D2BC /* FeedNewsViewController.xib */; };
 		4937CBA02D95A7C00014D2BC /* FeedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4937CB922D95A7C00014D2BC /* FeedViewController.xib */; };
 		4937CBA12D95A7C00014D2BC /* FeedNewsDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4937CB9C2D95A7C00014D2BC /* FeedNewsDetailsViewController.xib */; };
@@ -431,6 +432,7 @@
 		55B942739992777B34013115 /* ForkDocumentViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkDocumentViewModelFactory.swift; sourceTree = "<group>"; };
 		5AD043F1834114DB599A7B25 /* PassportSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassportSeeder.swift; sourceTree = "<group>"; };
 		5FAA4FB38CD1ABF71440EC12 /* PassportEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassportEditViewController.swift; sourceTree = "<group>"; };
+		68684A60BE088AAE6C271436 /* ForkDocumentViewModelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkDocumentViewModelWrapper.swift; sourceTree = "<group>"; };
 		6B1B467A921E9DD3BC080287 /* PassportStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassportStorage.swift; sourceTree = "<group>"; };
 		76374C3E8AF3EBAAC1C3834B /* ProfileViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ProfileViewController.storyboard; sourceTree = "<group>"; };
 		7B0AACF02B8B8D68007E00B8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -1444,6 +1446,7 @@
 				E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */,
 				25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */,
 				019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */,
+				68684A60BE088AAE6C271436 /* ForkDocumentViewModelWrapper.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1866,6 +1869,7 @@
 				BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */,
 				CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */,
 				9A9B416C8BDAE25C7F0A17B8 /* DSDocumentWithPhotoView+ForkKebab.swift in Sources */,
+				481E435AA9778F6F67E11181 /* ForkDocumentViewModelWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

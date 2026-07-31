@@ -66,6 +66,8 @@ class DocumentsProcessor {
     
     /// FORK: unified processor for all local document types — uses the same
     /// `DriverLicenseViewModel` from DiiaDocuments, just with a different `docType`.
+    /// Wraps it in `ForkDocumentViewModelWrapper` so `backView(for:flippingAction:)`
+    /// returns our offline QR view instead of the network-driven QRCodeBarcodeView.
     private func processDocs(licenses: DSFullDocumentModel?, docType: DocType) -> [DocumentModel] {
         let documents: [DocumentModel] = licenses?.data.filter({ $0.docData.validUntil == nil }).map {
             let vm = ForkDocumentViewModelFactory(docType: docType).createViewModel(model: $0)
@@ -75,7 +77,7 @@ class DocumentsProcessor {
             if let dsView = vm.frontView as? DSDocumentWithPhotoView {
                 dsView.forkHookOnFirstLayout()
             }
-            return vm
+            return ForkDocumentViewModelWrapper(wrapped: vm, docType: docType)
         } ?? []
         return reorderIfNeeded(documents: documents,
                                orderIds: DocumentReorderingService.shared.order(for: docType.rawValue))
