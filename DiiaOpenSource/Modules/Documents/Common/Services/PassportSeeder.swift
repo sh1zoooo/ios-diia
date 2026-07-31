@@ -1,6 +1,7 @@
 import Foundation
 import DiiaDocumentsCommonTypes
 import DiiaUIComponents
+import DiiaCommonServices
 
 /// FORK: builds and stores the Passport card using the same DS components as the
 /// real Diia backend. The card appears in the Documents tab only if
@@ -148,6 +149,13 @@ enum PassportSeeder {
         )
 
         storeHelper.save(model, type: DSFullDocumentModel.self, forKey: .passport)
+
+        // FORK: force the Documents tab to re-render immediately, without an
+        // app restart. Without this, DocumentsLoader's expirationDate-based
+        // check thinks the doc is "still actual" and never re-fetches →
+        // the visible card stays stale until the user toggles visibility
+        // off/on AND restarts the app.
+        (ServicesProvider.shared.documentsLoader as? DocumentsLoader)?.forkNotifyListeners()
     }
 
     private static func format(_ date: Date, _ format: String) -> String {

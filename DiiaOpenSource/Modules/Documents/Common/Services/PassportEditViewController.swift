@@ -31,9 +31,6 @@ final class PassportEditViewController: UIViewController {
     private let middleNameField  = PassportEditViewController.makeField(placeholder: "По батькові")
     private let birthDateField   = PassportEditViewController.makeField(placeholder: "Дата народження (напр. 24.08.1991)")
     private let numberField      = PassportEditViewController.makeField(placeholder: "Серія та номер (напр. ФО 123456)")
-    private let recordNumberField = PassportEditViewController.makeField(placeholder: "Номер запису")
-    private let issuedByField    = PassportEditViewController.makeField(placeholder: "Ким виданий")
-    private let issuedDateField  = PassportEditViewController.makeField(placeholder: "Дата видачі (напр. 20.05.2016)")
 
     private let signatureButton: UIButton = {
         let b = UIButton(type: .system)
@@ -46,8 +43,7 @@ final class PassportEditViewController: UIViewController {
     }()
 
     private lazy var textFields: [UITextField] = [
-        surnameField, firstNameField, middleNameField, birthDateField,
-        numberField, recordNumberField, issuedByField, issuedDateField
+        surnameField, firstNameField, middleNameField, birthDateField, numberField
     ]
 
     private let saveButton: UIButton = {
@@ -119,9 +115,6 @@ final class PassportEditViewController: UIViewController {
         middleNameField.text  = s.middleName
         birthDateField.text   = s.birthDate
         numberField.text      = s.number
-        recordNumberField.text = s.recordNumber
-        issuedByField.text    = s.issuedBy
-        issuedDateField.text  = s.issuedDate
         updatePhotoButton()
     }
 
@@ -176,10 +169,10 @@ final class PassportEditViewController: UIViewController {
                   middleName: middleNameField.text ?? "",
                   birthDate: birthDateField.text ?? "",
                   number: numberField.text ?? "",
-                  issuedBy: issuedByField.text ?? "",
-                  issuedDate: issuedDateField.text ?? "",
+                  issuedBy: PassportStorage.shared.issuedBy,
+                  issuedDate: PassportStorage.shared.issuedDate,
                   validUntil: PassportStorage.shared.validUntil,
-                  recordNumber: recordNumberField.text ?? "")
+                  recordNumber: PassportStorage.shared.recordNumber)
         )
         PassportSeeder.sync()
         navigationController?.popViewController(animated: true)

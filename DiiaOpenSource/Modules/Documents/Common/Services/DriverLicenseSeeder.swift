@@ -1,6 +1,7 @@
 import Foundation
 import DiiaDocumentsCommonTypes
 import DiiaUIComponents
+import DiiaCommonServices
 
 /// Будує та кладе в StoreHelper картку посвідчення водія, використовуючи ті самі
 /// design-system компоненти, що й реальний бекенд Дії (перевірено по коду
@@ -94,6 +95,10 @@ enum DriverLicenseSeeder {
         )
 
         storeHelper.save(model, type: DSFullDocumentModel.self, forKey: .driverLicense)
+
+        // FORK: force the Documents tab to re-render immediately, without an
+        // app restart. See PassportSeeder.sync() for the full explanation.
+        (ServicesProvider.shared.documentsLoader as? DocumentsLoader)?.forkNotifyListeners()
     }
 
     private static func format(_ date: Date, _ format: String) -> String {

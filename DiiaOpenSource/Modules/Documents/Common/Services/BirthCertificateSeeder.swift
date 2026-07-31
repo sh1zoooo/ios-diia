@@ -1,6 +1,7 @@
 import Foundation
 import DiiaDocumentsCommonTypes
 import DiiaUIComponents
+import DiiaCommonServices
 
 /// FORK: builds and stores the "Актовий запис про народження" card.
 enum BirthCertificateSeeder {
@@ -76,6 +77,10 @@ enum BirthCertificateSeeder {
         )
 
         storeHelper.save(model, type: DSFullDocumentModel.self, forKey: .birthCertificate)
+
+        // FORK: force the Documents tab to re-render immediately, without an
+        // app restart. See PassportSeeder.sync() for the full explanation.
+        (ServicesProvider.shared.documentsLoader as? DocumentsLoader)?.forkNotifyListeners()
     }
 
     private static func format(_ date: Date, _ format: String) -> String {

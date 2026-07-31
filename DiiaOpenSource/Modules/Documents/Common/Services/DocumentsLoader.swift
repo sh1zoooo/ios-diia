@@ -75,6 +75,16 @@ class DocumentsLoader: NSObject, DocumentsLoaderProtocol {
         listeners.removeAll(where: { $0.value === listener })
     }
 
+    /// FORK: notifies all listeners that documents were updated, bypassing the
+    /// normal API-based fetch flow. Used after `PassportSeeder.sync()` /
+    /// `DriverLicenseSeeder.sync()` / `BirthCertificateSeeder.sync()` so the
+    /// Documents tab re-renders with new data immediately, without an app restart.
+    func forkNotifyListeners() {
+        DispatchQueue.main.async { [weak self] in
+            self?.listeners.forEach { $0.value?.documentsWasUpdated() }
+        }
+    }
+
     // MARK: - Checking
     private func checkDocumentsActuallity() {
         irrelevantDocs = []

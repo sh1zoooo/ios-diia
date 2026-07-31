@@ -31,6 +31,7 @@ private var forkKebabKey: UInt8 = 0
 private var forkKebabHandlerKey: UInt8 = 0
 private var forkBottomHeadingEnlargedKey: UInt8 = 0
 private var forkKebabBoundsObserverKey: UInt8 = 0
+private var forkSignatureImageViewKey: UInt8 = 0
 
 extension DSDocumentWithPhotoView {
 
@@ -55,6 +56,7 @@ extension DSDocumentWithPhotoView {
         // If already has a non-zero size, add the kebab immediately.
         if bounds.width > 0 && bounds.height > 0 {
             forkEnsureKebabButton()
+            forkEnsureSignatureOverlay()
             forkEnlargeBottomHeadingFonts()
             return
         }
@@ -67,6 +69,7 @@ extension DSDocumentWithPhotoView {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.forkEnsureKebabButton()
+                self.forkEnsureSignatureOverlay()
                 self.forkEnlargeBottomHeadingFonts()
             }
             // Stop observing after the first valid layout.
@@ -117,6 +120,47 @@ extension DSDocumentWithPhotoView {
         forkKebabHandler = { [weak self] in
             self?.contextMenuCallback?()
         }
+    }
+
+    /// FORK: overlays the user's hand-drawn signature (PNG from
+    /// PassportStorage) in the bottom-right corner of the card, on top of
+    /// the bottomHeading area. DSDocumentWithPhotoView has no built-in slot
+    /// for a signature — DSDocumentContentData.signature exists in the enum
+    /// but the view never renders it. So we draw it ourselves.
+    ///
+    /// Only the Passport card has a signature — DriverLicense and
+    /// BirthCertificate don't, and this method is a no-op for those
+    /// (PassportStorage.shared.signatureImage returns nil).
+    private func forkEnsureSignatureOverlay() {
+        if let existing = objc_getAssociatedObject(self, &forkSignatureImageViewKey) as? UIImageView {
+            // Refresh the image in case the user re-drew the signature.
+            existing.image = PassportStorage.shared.signatureImage
+            self.bringSubviewToFront(existing)
+            return
+        }
+
+        guard let signature = PassportStorage.shared.signatureImage else { return }
+
+        let iv = UIImageView(image: signature)
+        iv.contentMode = .scaleAspectFit
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.backgroundColor = .clear
+        // Slight transparency so the signature looks like it's written on the
+        // card rather than pasted on top — matches the original Diia look.
+        iv.alpha = 0.85
+        addSubview(iv)
+
+        // Position: above the kebab button, on the right side of the card.
+        // The bottomHeading (full name) takes the left half of the bottom ~80pt;
+        // the signature goes in the right half, just above the kebab button.
+        NSLayoutConstraint.activate([
+            iv.widthAnchor.constraint(equalToConstant: 90),
+            iv.heightAnchor.constraint(equalToConstant: 36),
+            iv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            iv.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -52)
+        ])
+
+        objc_setAssociatedObject(self, &forkSignatureImageViewKey, iv, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     private func forkEnlargeBottomHeadingFonts() {
