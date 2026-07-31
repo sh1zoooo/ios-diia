@@ -19,11 +19,14 @@ import DiiaDocuments
 final class ForkDocumentViewModelWrapper: DocumentModel {
 
     private let wrapped: DriverLicenseViewModel
-    private let docType: DocType
+    /// FORK: stored fork-doc-type (passport / birthCertificate / driverLicense).
+    /// Distinct name from the protocol's `docType: DocumentAttributesProtocol?`
+    /// to avoid an invalid redeclaration error.
+    private let forkDocType: DocType
 
     init(wrapped: DriverLicenseViewModel, docType: DocType) {
         self.wrapped = wrapped
-        self.docType = docType
+        self.forkDocType = docType
     }
 
     // MARK: - Forwarded properties
@@ -41,7 +44,7 @@ final class ForkDocumentViewModelWrapper: DocumentModel {
     // MARK: - Forwarded methods
     func backView(for type: VerificationType?, flippingAction: @escaping Callback) -> FlippableEmbeddedView? {
         // FORK: return our own offline QR view instead of the network-driven one.
-        return ForkQRBackView(docType: docType, flippingAction: flippingAction)
+        return ForkQRBackView(docType: forkDocType, flippingAction: flippingAction)
     }
 
     func sharingRequest() -> Signal<ShareLinkModel, NetworkError>? {
