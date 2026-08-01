@@ -9,21 +9,24 @@ enum BirthCertificateSeeder {
     static func sync(storeHelper: StoreHelperProtocol = StoreHelper.instance) {
         let f = BirthCertificateStorage.shared.snapshot()
 
+        // 2-line heading exactly as in the reference screenshot:
+        // "Актовий запис про" / "моє народження".
         let heading = DSDocumentHeading(
-            headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(value: "Актовий запис про народження", subtitles: nil)
+            headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(value: "Актовий запис про\nмоє народження", subtitles: nil)
         )
 
-        // No photo for this document — birth certificate uses text-only layout.
+        // Subtitle line right under the heading — "Свідоцтва про народження".
+        let subtitle = DSTitleLabelMlc(label: "Свідоцтва про народження", componentId: nil)
+
+        // Only 2 fields on the card, matching the reference: birth date + birth place.
+        // (Record number / issuing authority / registration date are still kept in
+        // BirthCertificateStorage and the edit form, just not shown on the card itself.)
         let twoColumns = DSTableBlockTwoColumnPlaneOrg(
             photo: nil,
             photoUrl: nil,
             items: [
-                .init(tableItemVerticalMlc: .init(label: "Прізвище, ім'я, по батькові", value: BirthCertificateStorage.shared.fullName)),
-                .init(tableItemVerticalMlc: .init(label: "Дата народження", value: f.birthDate)),
-                .init(tableItemVerticalMlc: .init(label: "Місце народження", value: f.birthPlace)),
-                .init(tableItemVerticalMlc: .init(label: "Номер актового запису", value: f.recordNumber)),
-                .init(tableItemVerticalMlc: .init(label: "Орган реєстрації", value: f.issuedBy)),
-                .init(tableItemVerticalMlc: .init(label: "Дата реєстрації", value: f.issuedDate))
+                .init(tableItemVerticalMlc: .init(label: "Дата народження:", value: f.birthDate)),
+                .init(tableItemVerticalMlc: .init(label: "Місце народження:", value: f.birthPlace))
             ],
             headingWithSubtitlesMlc: nil
         )
@@ -54,6 +57,7 @@ enum BirthCertificateSeeder {
         let frontCardModel = DSDocumentModel(
             docHeadingOrg: heading,
             tableBlockTwoColumnsPlaneOrg: twoColumns,
+            subtitleLabelMlc: subtitle,
             tickerAtm: ticker,
             docButtonHeadingOrg: bottomHeading
         )
