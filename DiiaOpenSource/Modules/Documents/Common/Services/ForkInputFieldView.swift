@@ -54,7 +54,7 @@ public final class ForkInputFieldView: UIView {
         f.textColor = .black
         f.borderStyle = .none
         f.backgroundColor = .clear
-        f.adjustsFontToFitWidth = false
+        f.adjustsFontSizeToFitWidth = false
         f.translatesAutoresizingMaskIntoConstraints = false
         return f
     }()
