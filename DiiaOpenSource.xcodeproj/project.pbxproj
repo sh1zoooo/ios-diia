@@ -241,19 +241,23 @@
 		7BE199562B16E753008C9FAC /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199552B16E753008C9FAC /* LocalizationHelper.swift */; };
 		7BE199642B17C230008C9FAC /* FaqOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199632B17C230008C9FAC /* FaqOpener.swift */; };
 		7BE199672B17C319008C9FAC /* DriverReplacementStubModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE199662B17C319008C9FAC /* DriverReplacementStubModule.swift */; };
+		7DD847FF89F2CA50D2EECA65 /* ForkFormButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BE48CC8EAC964811209D6E /* ForkFormButtonView.swift */; };
 		80C842DCAF9E535A95F055C1 /* ForkDocumentViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B942739992777B34013115 /* ForkDocumentViewModelFactory.swift */; };
 		86176550F1E50DA75DCF5428 /* DriverLicenseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */; };
 		876B4B97BC10366C1360ECEA /* PassportStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1B467A921E9DD3BC080287 /* PassportStorage.swift */; };
 		8A0E40A492A55C10C524FBFA /* PassportEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAA4FB38CD1ABF71440EC12 /* PassportEditViewController.swift */; };
 		9515437DB900877AAD5D7FD9 /* ProfileModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C4410BB173723540A4B6A /* ProfileModule.swift */; };
+		96E0422EA0E8112A8C22F1A3 /* ForkInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAF4036ACA99A8BC67F51E1 /* ForkInputFieldView.swift */; };
 		9A9B416C8BDAE25C7F0A17B8 /* DSDocumentWithPhotoView+ForkKebab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */; };
 		A4474A9687DA5FCE95DC073B /* PassportSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD043F1834114DB599A7B25 /* PassportSeeder.swift */; };
 		BCDE44218B44EFB1933A003B /* SignatureEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9964A38860BE65C88C28E6A /* SignatureEditorViewController.swift */; };
 		C53E055544D49C372A9CCBDB /* DriverLicenseEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC46DFFBB04E27F1920BF36D /* DriverLicenseEditViewController.swift */; };
+		C74440C698D267D0E44EC74C /* ForkEditFormBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB4C86AB63340544310B1E /* ForkEditFormBuilder.swift */; };
 		CB4209042E9D24EE00266703 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = CB4209032E9D24EE00266703 /* Collections */; };
 		CB42090B2E9D272C00266703 /* LinkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB42090A2E9D272C00266703 /* LinkResponse.swift */; };
 		CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */; };
 		D4A145D49A7E92DC5B775D78 /* PassportEditModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6643BD80CAE856EFC5B8CA /* PassportEditModule.swift */; };
+		E3C44A268E31CB8BC4A356CD /* ForkAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41674E96B668FEA0B38108B1 /* ForkAvatarView.swift */; };
 		E6244AB893A3958CDD141EC8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82054AD0B6E0732178A76973 /* ProfileViewController.swift */; };
 		F96CE46B2C0D63B190DDACC1 /* DriverLicenseEditModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */; };
 		F9C949F8A2126D4E0D572BFF /* BirthCertificateEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D40BB992CCB414E1BA718 /* BirthCertificateEditViewController.swift */; };
@@ -262,6 +266,7 @@
 /* Begin PBXFileReference section */
 		019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DSDocumentWithPhotoView+ForkKebab.swift"; path = "DSDocumentWithPhotoView+ForkKebab.swift"; sourceTree = "<group>"; };
 		0E3E63CD7B64AB9348F5ECA5 /* DriverLicenseStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseStorage.swift; sourceTree = "<group>"; };
+		11CB4C86AB63340544310B1E /* ForkEditFormBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkEditFormBuilder.swift; sourceTree = "<group>"; };
 		1BAE4078AC589B14741EEFFE /* DocumentVisibilityStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentVisibilityStorage.swift; sourceTree = "<group>"; };
 		20AF4613AEF6BA7D33EE7653 /* BirthCertificateStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateStorage.swift; sourceTree = "<group>"; };
 		25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureEditorModule.swift; sourceTree = "<group>"; };
@@ -279,6 +284,8 @@
 		33B035302B29CAE600374227 /* BankIDIdentifyTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BankIDIdentifyTask.swift; sourceTree = "<group>"; };
 		33B035322B29CF1700374227 /* AuthorizationStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationStorage.swift; sourceTree = "<group>"; };
 		33B035342B29CF8900374227 /* Dictionary+UserIdentifyHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+UserIdentifyHandlers.swift"; sourceTree = "<group>"; };
+		40BE48CC8EAC964811209D6E /* ForkFormButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkFormButtonView.swift; sourceTree = "<group>"; };
+		41674E96B668FEA0B38108B1 /* ForkAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkAvatarView.swift; sourceTree = "<group>"; };
 		4286142F2FE28C480083C479 /* PublicServiceRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceRouteBuilder.swift; sourceTree = "<group>"; };
 		428614312FE28C820083C479 /* PublicServiceCategoryRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicServiceCategoryRouteBuilder.swift; sourceTree = "<group>"; };
 		428614332FE290910083C479 /* GenericPublicServiceCallbackRouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPublicServiceCallbackRouteBuilder.swift; sourceTree = "<group>"; };
@@ -492,6 +499,7 @@
 		7BE199662B17C319008C9FAC /* DriverReplacementStubModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverReplacementStubModule.swift; sourceTree = "<group>"; };
 		8143AA5CAD5C6CF04A1BF775 /* DriverLicenseSeeder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseSeeder.swift; sourceTree = "<group>"; };
 		82054AD0B6E0732178A76973 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		8AAF4036ACA99A8BC67F51E1 /* ForkInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForkInputFieldView.swift; sourceTree = "<group>"; };
 		8C39AD0D28D1D3D9C0166C15 /* DriverLicenseEditModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverLicenseEditModule.swift; sourceTree = "<group>"; };
 		8D6643BD80CAE856EFC5B8CA /* PassportEditModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassportEditModule.swift; sourceTree = "<group>"; };
 		AB774B0098D1AEDF317F53A3 /* BirthCertificateSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthCertificateSeeder.swift; sourceTree = "<group>"; };
@@ -1447,6 +1455,10 @@
 				25E649A3B4E9CF657EC138E2 /* SignatureEditorModule.swift */,
 				019949EB9920B0A7A31E8E85 /* DSDocumentWithPhotoView+ForkKebab.swift */,
 				68684A60BE088AAE6C271436 /* ForkDocumentViewModelWrapper.swift */,
+				8AAF4036ACA99A8BC67F51E1 /* ForkInputFieldView.swift */,
+				40BE48CC8EAC964811209D6E /* ForkFormButtonView.swift */,
+				41674E96B668FEA0B38108B1 /* ForkAvatarView.swift */,
+				11CB4C86AB63340544310B1E /* ForkEditFormBuilder.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1870,6 +1882,10 @@
 				CCB4482791B7771F12FCC625 /* SignatureEditorModule.swift in Sources */,
 				9A9B416C8BDAE25C7F0A17B8 /* DSDocumentWithPhotoView+ForkKebab.swift in Sources */,
 				481E435AA9778F6F67E11181 /* ForkDocumentViewModelWrapper.swift in Sources */,
+				96E0422EA0E8112A8C22F1A3 /* ForkInputFieldView.swift in Sources */,
+				7DD847FF89F2CA50D2EECA65 /* ForkFormButtonView.swift in Sources */,
+				E3C44A268E31CB8BC4A356CD /* ForkAvatarView.swift in Sources */,
+				C74440C698D267D0E44EC74C /* ForkEditFormBuilder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

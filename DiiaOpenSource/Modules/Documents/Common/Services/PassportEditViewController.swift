@@ -1,174 +1,121 @@
 import UIKit
 
-/// FORK: simple form for filling in the passport fields. Plain UIKit, no storyboard.
-/// Mirrors DriverLicenseEditViewController.
+/// FORK: passport edit form, redesigned in Diia style (animated gradient bg,
+/// white rounded cards, custom input fields with icons).
+///
+/// Uses ForkEditFormBuilder for the layout. Photo picker + signature editor
+/// are reached via two button-rows in the second card.
 final class PassportEditViewController: UIViewController {
 
-    private let scrollView = UIScrollView()
-    private let stackView: UIStackView = {
-        let s = UIStackView()
-        s.axis = .vertical
-        s.spacing = 16
-        return s
-    }()
+    // Storage references kept as instance properties so closures can read/write them.
+    private var surname: String = ""
+    private var firstName: String = ""
+    private var middleName: String = ""
+    private var birthDate: String = ""
+    private var number: String = ""
 
-    private let photoButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.layer.cornerRadius = 12
-        b.layer.masksToBounds = true
-        b.backgroundColor = .secondarySystemBackground
-        b.setTitle("Додати фото", for: .normal)
-        b.contentVerticalAlignment = .fill
-        b.contentHorizontalAlignment = .fill
-        b.imageView?.contentMode = .scaleAspectFill
-        b.heightAnchor.constraint(equalToConstant: 160).isActive = true
-        b.widthAnchor.constraint(equalToConstant: 160).isActive = true
-        return b
-    }()
+    private var avatarView: ForkAvatarView?
+    private var textFields: [UITextField] = []
 
-    private let surnameField     = PassportEditViewController.makeField(placeholder: "Прізвище")
-    private let firstNameField   = PassportEditViewController.makeField(placeholder: "Ім’я")
-    private let middleNameField  = PassportEditViewController.makeField(placeholder: "По батькові")
-    private let birthDateField   = PassportEditViewController.makeField(placeholder: "Дата народження (напр. 24.08.1991)")
-    private let numberField      = PassportEditViewController.makeField(placeholder: "Серія та номер (напр. ФО 123456)")
-
-    private let signatureButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.setTitle("Намалювати підпис", for: .normal)
-        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        b.backgroundColor = .secondarySystemBackground
-        b.layer.cornerRadius = 12
-        b.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        return b
-    }()
-
-    private lazy var textFields: [UITextField] = [
-        surnameField, firstNameField, middleNameField, birthDateField, numberField
-    ]
-
-    private let saveButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.setTitle("Зберегти", for: .normal)
-        b.titleLabel?.font = .boldSystemFont(ofSize: 17)
-        b.backgroundColor = .black
-        b.setTitleColor(.white, for: .normal)
-        b.layer.cornerRadius = 12
-        return b
+    private lazy var photoPicker: UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        return picker
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Паспорт громадянина України"
-        view.backgroundColor = .systemBackground
-        setupLayout()
+        navigationItem.title = "Паспорт"
         loadCurrentValues()
-        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
-        photoButton.addTarget(self, action: #selector(photoTapped), for: .touchUpInside)
-        signatureButton.addTarget(self, action: #selector(signatureTapped), for: .touchUpInside)
-        textFields.forEach { $0.delegate = self }
-
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+        buildForm()
     }
 
-    private func setupLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-        photoButton.translatesAutoresizingMaskIntoConstraints = false
+    // MARK: - Form
 
-        view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
-        view.addSubview(saveButton)
-
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            scrollView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -16),
-
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            saveButton.heightAnchor.constraint(equalToConstant: 52)
-        ])
-
-        let photoWrapper = UIStackView(arrangedSubviews: [photoButton])
-        photoWrapper.axis = .horizontal
-        photoWrapper.alignment = .center
-        stackView.addArrangedSubview(photoWrapper)
-        textFields.forEach { stackView.addArrangedSubview($0) }
-        stackView.addArrangedSubview(signatureButton)
+    private func buildForm() {
+        let result = ForkEditFormBuilder.build(
+            in: self,
+            title: "Паспорт громадянина України",
+            subtitle: "Заповніть дані документа",
+            sections: [
+                .init(title: "Особисті дані", fields: [
+                    .text(icon: UIImage(systemName: "person"),
+                         label: "ПРІЗВИЩЕ",
+                         placeholder: "Прізвище",
+                         value: surname,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.surname = v }),
+                    .text(icon: UIImage(systemName: "person"),
+                         label: "ІМ’Я",
+                         placeholder: "Ім’я",
+                         value: firstName,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.firstName = v }),
+                    .text(icon: UIImage(systemName: "person"),
+                         label: "ПО БАТЬКОВІ",
+                         placeholder: "По батькові",
+                         value: middleName,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.middleName = v }),
+                ]),
+                .init(title: "Дані документа", fields: [
+                    .text(icon: UIImage(systemName: "calendar"),
+                         label: "ДАТА НАРОДЖЕННЯ",
+                         placeholder: "напр. 24.08.1991",
+                         value: birthDate,
+                         keyboardType: .numbersAndPunctuation,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.birthDate = v }),
+                    .text(icon: UIImage(systemName: "number"),
+                         label: "СЕРІЯ ТА НОМЕР",
+                         placeholder: "напр. ФО 123456",
+                         value: number,
+                         keyboardType: .default,
+                         returnKey: .done,
+                         onChange: { [weak self] v in self?.number = v }),
+                    .buttonRow(icon: UIImage(systemName: "signature"),
+                               label: "Намалювати підпис",
+                               onTap: { [weak self] in self?.openSignatureEditor() }),
+                ]),
+            ],
+            avatar: .init(image: PassportStorage.shared.photo,
+                          placeholderInitial: "П",
+                          onTap: { [weak self] in self?.photoTapped() }),
+            primaryButton: .init(title: "Зберегти", style: .primary, action: { [weak self] in self?.saveTapped() }),
+            secondaryButton: .init(title: "Скасувати", style: .secondary, action: { [weak self] in self?.cancelTapped() }),
+            backAction: { [weak self] in self?.cancelTapped() }
+        )
+        self.textFields = result.textFields
+        self.avatarView = result.avatarView
+        // Make return-key cycle through fields.
+        textFields.enumerated().forEach { idx, tf in
+            tf.delegate = self
+            tf.tag = idx
+        }
     }
+
+    // MARK: - State
 
     private func loadCurrentValues() {
         let s = PassportStorage.shared.snapshot()
-        surnameField.text     = s.surname
-        firstNameField.text   = s.firstName
-        middleNameField.text  = s.middleName
-        birthDateField.text   = s.birthDate
-        numberField.text      = s.number
-        updatePhotoButton()
-    }
-
-    private func updatePhotoButton() {
-        if let photo = PassportStorage.shared.photo {
-            photoButton.setImage(photo, for: .normal)
-            photoButton.setTitle(nil, for: .normal)
-        } else {
-            photoButton.setImage(nil, for: .normal)
-            photoButton.setTitle("Додати фото", for: .normal)
-        }
-    }
-
-    @objc private func dismissKeyboard() { view.endEditing(true) }
-
-    @objc private func photoTapped() {
-        let sheet = UIAlertController(title: "Фото на документ", message: nil, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Камера", style: .default) { [weak self] _ in self?.presentPicker(source: .camera) })
-        sheet.addAction(UIAlertAction(title: "Галерея", style: .default) { [weak self] _ in self?.presentPicker(source: .photoLibrary) })
-        if PassportStorage.shared.photo != nil {
-            sheet.addAction(UIAlertAction(title: "Видалити фото", style: .destructive) { [weak self] _ in
-                PassportStorage.shared.clearPhoto()
-                self?.updatePhotoButton()
-                PassportSeeder.sync()
-            })
-        }
-        sheet.addAction(UIAlertAction(title: "Скасувати", style: .cancel))
-        sheet.popoverPresentationController?.sourceView = photoButton
-        sheet.popoverPresentationController?.sourceRect = photoButton.bounds
-        present(sheet, animated: true)
-    }
-
-    private func presentPicker(source: UIImagePickerController.SourceType) {
-        guard UIImagePickerController.isSourceTypeAvailable(source) else { return }
-        let picker = UIImagePickerController()
-        picker.sourceType = source
-        picker.delegate = self
-        picker.allowsEditing = true
-        present(picker, animated: true)
-    }
-
-    @objc private func signatureTapped() {
-        // Push the signature editor inside the same navigation stack so the
-        // user comes back to this form after saving.
-        navigationController?.pushViewController(SignatureEditorViewController(), animated: true)
+        surname = s.surname
+        firstName = s.firstName
+        middleName = s.middleName
+        birthDate = s.birthDate
+        number = s.number
     }
 
     @objc private func saveTapped() {
         PassportStorage.shared.apply(
-            .init(surname: surnameField.text ?? "",
-                  firstName: firstNameField.text ?? "",
-                  middleName: middleNameField.text ?? "",
-                  birthDate: birthDateField.text ?? "",
-                  number: numberField.text ?? "",
+            .init(surname: surname,
+                  firstName: firstName,
+                  middleName: middleName,
+                  birthDate: birthDate,
+                  number: number,
                   issuedBy: PassportStorage.shared.issuedBy,
                   issuedDate: PassportStorage.shared.issuedDate,
                   validUntil: PassportStorage.shared.validUntil,
@@ -178,32 +125,61 @@ final class PassportEditViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    private static func makeField(placeholder: String) -> UITextField {
-        let f = UITextField()
-        f.placeholder = placeholder
-        f.borderStyle = .roundedRect
-        f.font = .systemFont(ofSize: 16)
-        f.returnKeyType = .next
-        f.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        return f
+    @objc private func cancelTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+
+    @objc private func photoTapped() {
+        let sheet = UIAlertController(title: "Фото на документ", message: nil, preferredStyle: .actionSheet)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            sheet.addAction(.init(title: "Камера", style: .default) { [weak self] _ in self?.presentPicker(source: .camera) })
+        }
+        sheet.addAction(.init(title: "Галерея", style: .default) { [weak self] _ in self?.presentPicker(source: .photoLibrary) })
+        if PassportStorage.shared.photo != nil {
+            sheet.addAction(.init(title: "Видалити фото", style: .destructive) { [weak self] _ in
+                PassportStorage.shared.clearPhoto()
+                self?.avatarView?.update(image: nil)
+                PassportSeeder.sync()
+            })
+        }
+        sheet.addAction(.init(title: "Скасувати", style: .cancel))
+        sheet.popoverPresentationController?.sourceView = avatarView ?? view
+        sheet.popoverPresentationController?.sourceRect = avatarView?.bounds ?? view.bounds
+        present(sheet, animated: true)
+    }
+
+    private func presentPicker(source: UIImagePickerController.SourceType) {
+        guard UIImagePickerController.isSourceTypeAvailable(source) else { return }
+        photoPicker.sourceType = source
+        present(photoPicker, animated: true)
+    }
+
+    @objc private func openSignatureEditor() {
+        navigationController?.pushViewController(SignatureEditorViewController(), animated: true)
     }
 }
 
+// MARK: - UITextFieldDelegate (Next cycling)
 extension PassportEditViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let i = textFields.firstIndex(of: textField) else { textField.resignFirstResponder(); return true }
-        if i + 1 < textFields.count { textFields[i + 1].becomeFirstResponder() } else { textField.resignFirstResponder() }
+        let idx = textField.tag
+        if idx + 1 < textFields.count {
+            textFields[idx + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
         return true
     }
 }
 
+// MARK: - UIImagePickerControllerDelegate
 extension PassportEditViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        picker.dismiss(animated: true)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = (info[.editedImage] as? UIImage) ?? (info[.originalImage] as? UIImage)
-        guard let image else { return }
+        picker.dismiss(animated: true)
+        guard let image = image else { return }
         PassportStorage.shared.savePhoto(image)
-        updatePhotoButton()
+        avatarView?.update(image: PassportStorage.shared.photo)
         PassportSeeder.sync()
     }
 

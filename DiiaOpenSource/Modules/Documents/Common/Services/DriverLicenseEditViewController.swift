@@ -1,194 +1,149 @@
 import UIKit
 
-/// FORK: simple form for filling in the driver-license fields shown in the
-/// "Документи" tab. Plain UIKit, no storyboard — mirrors the storage pattern
-/// used by `ProfileViewController`/`ProfileStorage`.
+/// FORK: driver-license edit form, redesigned in Diia style via ForkEditFormBuilder.
 final class DriverLicenseEditViewController: UIViewController {
 
-    private let scrollView = UIScrollView()
-    private let stackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 16
-        return stack
-    }()
+    private var fullName: String = ""
+    private var birthDate: String = ""
+    private var category: String = ""
+    private var number: String = ""
+    private var validUntil: String = ""
 
-    private let photoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        button.backgroundColor = .secondarySystemBackground
-        button.setTitle("Додати фото", for: .normal)
-        button.contentVerticalAlignment = .fill
-        button.contentHorizontalAlignment = .fill
-        button.imageView?.contentMode = .scaleAspectFill
-        button.heightAnchor.constraint(equalToConstant: 160).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 160).isActive = true
-        return button
-    }()
+    private var avatarView: ForkAvatarView?
+    private var textFields: [UITextField] = []
 
-    private let fullNameField = DriverLicenseEditViewController.makeField(placeholder: "Прізвище, ім'я, по батькові")
-    private let birthDateField = DriverLicenseEditViewController.makeField(placeholder: "Дата народження (напр. 24.08.1991)")
-    private let categoryField = DriverLicenseEditViewController.makeField(placeholder: "Категорії (напр. B, C)")
-    private let numberField = DriverLicenseEditViewController.makeField(placeholder: "Номер посвідчення")
-    private let validUntilField = DriverLicenseEditViewController.makeField(placeholder: "Дійсне до (напр. 20.05.2024)")
-
-    private lazy var textFields: [UITextField] = [
-        fullNameField, birthDateField, categoryField, numberField, validUntilField
-    ]
-
-    private let saveButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Зберегти", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 17)
-        button.backgroundColor = .black
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
-        return button
+    private lazy var photoPicker: UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        return picker
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Посвідчення водія"
-        view.backgroundColor = .systemBackground
-        setupLayout()
+        navigationItem.title = "Посвідчення водія"
         loadCurrentValues()
-        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
-        photoButton.addTarget(self, action: #selector(photoTapped), for: .touchUpInside)
-        textFields.forEach { $0.delegate = self }
-
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+        buildForm()
     }
 
-    private func setupLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-        photoButton.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
-        view.addSubview(saveButton)
-
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            scrollView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -16),
-
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            saveButton.heightAnchor.constraint(equalToConstant: 52)
-        ])
-
-        let photoWrapper = UIStackView(arrangedSubviews: [photoButton])
-        photoWrapper.axis = .horizontal
-        photoWrapper.alignment = .center
-
-        stackView.addArrangedSubview(photoWrapper)
-        textFields.forEach { stackView.addArrangedSubview($0) }
-    }
-
-    private func loadCurrentValues() {
-        let fields = DriverLicenseStorage.shared.snapshot()
-        fullNameField.text = fields.fullName
-        birthDateField.text = fields.birthDate
-        categoryField.text = fields.category
-        numberField.text = fields.number
-        validUntilField.text = fields.validUntil
-        updatePhotoButton()
-    }
-
-    private func updatePhotoButton() {
-        if let photo = DriverLicenseStorage.shared.photo {
-            photoButton.setImage(photo, for: .normal)
-            photoButton.setTitle(nil, for: .normal)
-        } else {
-            photoButton.setImage(nil, for: .normal)
-            photoButton.setTitle("Додати фото", for: .normal)
+    private func buildForm() {
+        let result = ForkEditFormBuilder.build(
+            in: self,
+            title: "Посвідчення водія",
+            subtitle: "Заповніть дані документа",
+            sections: [
+                .init(title: "Особисті дані", fields: [
+                    .text(icon: UIImage(systemName: "person"),
+                         label: "ПРІЗВИЩЕ, ІМ’Я, ПО БАТЬКОВІ",
+                         placeholder: "Прізвище Ім’я По-батькові",
+                         value: fullName,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.fullName = v }),
+                    .text(icon: UIImage(systemName: "calendar"),
+                         label: "ДАТА НАРОДЖЕННЯ",
+                         placeholder: "напр. 24.08.1991",
+                         value: birthDate,
+                         keyboardType: .numbersAndPunctuation,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.birthDate = v }),
+                ]),
+                .init(title: "Дані посвідчення", fields: [
+                    .text(icon: UIImage(systemName: "list.clipboard"),
+                         label: "КАТЕГОРІЇ",
+                         placeholder: "напр. B, C",
+                         value: category,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.category = v }),
+                    .text(icon: UIImage(systemName: "number"),
+                         label: "НОМЕР ПОСВІДЧЕННЯ",
+                         placeholder: "Номер посвідчення",
+                         value: number,
+                         keyboardType: .default,
+                         returnKey: .next,
+                         onChange: { [weak self] v in self?.number = v }),
+                    .text(icon: UIImage(systemName: "calendar.badge.clock"),
+                         label: "ДІЙСНЕ ДО",
+                         placeholder: "напр. 20.05.2024",
+                         value: validUntil,
+                         keyboardType: .numbersAndPunctuation,
+                         returnKey: .done,
+                         onChange: { [weak self] v in self?.validUntil = v }),
+                ]),
+            ],
+            avatar: .init(image: DriverLicenseStorage.shared.photo,
+                          placeholderInitial: "В",
+                          onTap: { [weak self] in self?.photoTapped() }),
+            primaryButton: .init(title: "Зберегти", style: .primary, action: { [weak self] in self?.saveTapped() }),
+            secondaryButton: .init(title: "Скасувати", style: .secondary, action: { [weak self] in self?.cancelTapped() }),
+            backAction: { [weak self] in self?.cancelTapped() }
+        )
+        self.textFields = result.textFields
+        self.avatarView = result.avatarView
+        textFields.enumerated().forEach { idx, tf in
+            tf.delegate = self
+            tf.tag = idx
         }
     }
 
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
+    private func loadCurrentValues() {
+        let s = DriverLicenseStorage.shared.snapshot()
+        fullName = s.fullName
+        birthDate = s.birthDate
+        category = s.category
+        number = s.number
+        validUntil = s.validUntil
+    }
+
+    @objc private func saveTapped() {
+        DriverLicenseStorage.shared.apply(
+            .init(fullName: fullName,
+                  birthDate: birthDate,
+                  category: category,
+                  number: number,
+                  issuedBy: DriverLicenseStorage.shared.issuedBy,
+                  validUntil: validUntil)
+        )
+        DriverLicenseSeeder.sync()
+        navigationController?.popViewController(animated: true)
+    }
+
+    @objc private func cancelTapped() {
+        navigationController?.popViewController(animated: true)
     }
 
     @objc private func photoTapped() {
         let sheet = UIAlertController(title: "Фото на документ", message: nil, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Камера", style: .default) { [weak self] _ in
-            self?.presentPicker(source: .camera)
-        })
-        sheet.addAction(UIAlertAction(title: "Галерея", style: .default) { [weak self] _ in
-            self?.presentPicker(source: .photoLibrary)
-        })
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            sheet.addAction(.init(title: "Камера", style: .default) { [weak self] _ in self?.presentPicker(source: .camera) })
+        }
+        sheet.addAction(.init(title: "Галерея", style: .default) { [weak self] _ in self?.presentPicker(source: .photoLibrary) })
         if DriverLicenseStorage.shared.photo != nil {
-            sheet.addAction(UIAlertAction(title: "Видалити фото", style: .destructive) { [weak self] _ in
+            sheet.addAction(.init(title: "Видалити фото", style: .destructive) { [weak self] _ in
                 DriverLicenseStorage.shared.clearPhoto()
-                self?.updatePhotoButton()
+                self?.avatarView?.update(image: nil)
                 DriverLicenseSeeder.sync()
             })
         }
-        sheet.addAction(UIAlertAction(title: "Скасувати", style: .cancel))
-        // iPad needs an anchor for the popover presentation.
-        sheet.popoverPresentationController?.sourceView = photoButton
-        sheet.popoverPresentationController?.sourceRect = photoButton.bounds
+        sheet.addAction(.init(title: "Скасувати", style: .cancel))
+        sheet.popoverPresentationController?.sourceView = avatarView ?? view
+        sheet.popoverPresentationController?.sourceRect = avatarView?.bounds ?? view.bounds
         present(sheet, animated: true)
     }
 
     private func presentPicker(source: UIImagePickerController.SourceType) {
         guard UIImagePickerController.isSourceTypeAvailable(source) else { return }
-        let picker = UIImagePickerController()
-        picker.sourceType = source
-        picker.delegate = self
-        picker.allowsEditing = true
-        present(picker, animated: true)
-    }
-
-    @objc private func saveTapped() {
-        DriverLicenseStorage.shared.apply(
-            .init(
-                fullName: fullNameField.text ?? "",
-                birthDate: birthDateField.text ?? "",
-                category: categoryField.text ?? "",
-                number: numberField.text ?? "",
-                issuedBy: DriverLicenseStorage.shared.issuedBy,
-                validUntil: validUntilField.text ?? ""
-            )
-        )
-        // Refresh the stored document immediately so the Documents tab
-        // shows the new values without needing an app restart.
-        DriverLicenseSeeder.sync()
-        navigationController?.popViewController(animated: true)
-    }
-
-    private static func makeField(placeholder: String) -> UITextField {
-        let field = UITextField()
-        field.placeholder = placeholder
-        field.borderStyle = .roundedRect
-        field.font = .systemFont(ofSize: 16)
-        field.returnKeyType = .next
-        field.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        return field
+        photoPicker.sourceType = source
+        present(photoPicker, animated: true)
     }
 }
 
 extension DriverLicenseEditViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let index = textFields.firstIndex(of: textField) else {
-            textField.resignFirstResponder()
-            return true
-        }
-        if index + 1 < textFields.count {
-            textFields[index + 1].becomeFirstResponder()
+        let idx = textField.tag
+        if idx + 1 < textFields.count {
+            textFields[idx + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
         }
@@ -197,12 +152,12 @@ extension DriverLicenseEditViewController: UITextFieldDelegate {
 }
 
 extension DriverLicenseEditViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        picker.dismiss(animated: true)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = (info[.editedImage] as? UIImage) ?? (info[.originalImage] as? UIImage)
-        guard let image else { return }
+        picker.dismiss(animated: true)
+        guard let image = image else { return }
         DriverLicenseStorage.shared.savePhoto(image)
-        updatePhotoButton()
+        avatarView?.update(image: DriverLicenseStorage.shared.photo)
         DriverLicenseSeeder.sync()
     }
 
