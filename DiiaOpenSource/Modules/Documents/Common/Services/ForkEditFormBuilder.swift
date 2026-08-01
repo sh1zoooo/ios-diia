@@ -97,11 +97,14 @@ public final class ForkEditFormBuilder {
         // 2. Back button (top-left). Simple custom button to avoid pulling in
         //    TopNavigationBigView (which has its own constraints/layout that
         //    doesn't match our use-case cleanly).
+        let host = ForkEditFormHost(backAction: backAction, viewController: viewController)
+        forkAttachHost(to: viewController, host: host)
+
         let backButton = UIButton(type: .system)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.setImage(UIImage(named: "menu_back"), for: .normal)
         backButton.tintColor = .black
-        backButton.addTarget(viewController, action: #selector(ForkEditFormHost.backTappedHost), for: .touchUpInside)
+        backButton.addTarget(host, action: #selector(ForkEditFormHost.backTapped), for: .touchUpInside)
         view.addSubview(backButton)
 
         // 3. Title label.
@@ -281,11 +284,8 @@ public final class ForkEditFormBuilder {
             buttonsStack.addArrangedSubview(UIView())
         }
 
-        // 10. Wire back action via associated-object host on viewController.
-        ForkEditFormHost.attach(to: viewController, backAction: backAction)
-
-        // 11. Tap anywhere to dismiss keyboard.
-        let tap = UITapGestureRecognizer(target: viewController, action: #selector(ForkEditFormHost.dismissKeyboardHost))
+        // 10. Tap anywhere to dismiss keyboard.
+        let tap = UITapGestureRecognizer(target: host, action: #selector(ForkEditFormHost.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
 
@@ -357,30 +357,47 @@ public final class ForkEditFormBuilder {
     }
 }
 
-// MARK: - Host helpers (back action + dismiss-keyboard via associated objects)
+// MARK: - Host helpers
+//
+// We need a stable NSObject target whose @objc instance methods can be used as
+// selectors from UIButton / UITapGestureRecognizer. The view controller itself
+// can't host those methods because Swift @objc instance methods can't be added
+// to a class via extension across module boundaries — and even within the same
+// module, `addTarget(vc, action: #selector(SomeClass.method))` requires the
+// method to be visible on the vc instance, which only works if SomeClass IS
+// the vc's class.
+//
+// Solution: a small NSObject "action-target" that holds a closure. Each
+// builder invocation creates one and stores it via associated object on the
+// view controller (so it lives as long as the vc does).
 
-private final class ForkEditFormHost {
-    private static var backActionKey: UInt8 = 0
+private final class ForkEditFormHost: NSObject {
+    let backAction: () -> Void
+    weak var viewController: UIViewController?
 
-    static func attach(to vc: UIViewController, backAction: @escaping () -> Void) {
-        let box = BackActionBox(action: backAction)
-        objc_setAssociatedObject(vc, &backActionKey, box, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    init(backAction: @escaping () -> Void, viewController: UIViewController) {
+        self.backAction = backAction
+        self.viewController = viewController
+        super.init()
     }
 
-    @objc static func backTappedHost(_ vc: UIViewController) {
-        if let box = objc_getAssociatedObject(vc, &backActionKey) as? BackActionBox {
-            box.action()
-        }
+    @objc func backTapped() {
+        backAction()
     }
 
-    @objc static func dismissKeyboardHost(_ vc: UIViewController) {
-        vc.view.endEditing(true)
+    @objc func dismissKeyboard() {
+        viewController?.view.endEditing(true)
     }
+}
 
-    private final class BackActionBox {
-        let action: () -> Void
-        init(action: @escaping () -> Void) { self.action = action }
-    }
+private var forkHostKey: UInt8 = 0
+
+private func forkAttachHost(to vc: UIViewController, host: ForkEditFormHost) {
+    objc_setAssociatedObject(vc, &forkHostKey, host, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+}
+
+private func forkHost(for vc: UIViewController) -> ForkEditFormHost? {
+    objc_getAssociatedObject(vc, &forkHostKey) as? ForkEditFormHost
 }
 
 // We need to bridge button-row taps to per-instance closures. Use a small
