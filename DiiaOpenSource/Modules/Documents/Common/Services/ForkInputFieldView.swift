@@ -55,6 +55,10 @@ public final class ForkInputFieldView: UIView {
         f.borderStyle = .none
         f.backgroundColor = .clear
         f.adjustsFontSizeToFitWidth = false
+        // Make placeholder darker than default — on the gradient background
+        // the system placeholderTextColor (~0.5 alpha gray) is barely visible.
+        // Use ~0.45 black which renders visibly even on a colored gradient.
+        f.attributedPlaceholder = nil
         f.translatesAutoresizingMaskIntoConstraints = false
         return f
     }()
@@ -148,7 +152,17 @@ public final class ForkInputFieldView: UIView {
     private func applyViewModel() {
         labelLabel.text = viewModel.label
         textField.text = viewModel.value
-        textField.placeholder = viewModel.placeholder
+        // Darker placeholder so it's readable on the animated gradient bg.
+        // UIColor(white: 0.20, alpha: 0.55) is much darker than the system
+        // default (~0.5 alpha gray).
+        let placeholderAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor(white: 0.20, alpha: 0.55),
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular),
+        ]
+        textField.attributedPlaceholder = NSAttributedString(
+            string: viewModel.placeholder,
+            attributes: placeholderAttrs
+        )
         textField.keyboardType = viewModel.keyboardType
         textField.returnKeyType = viewModel.returnKeyType
         textField.autocorrectionType = .no

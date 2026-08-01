@@ -94,18 +94,8 @@ public final class ForkEditFormBuilder {
         ])
         bg.play()
 
-        // 2. Back button (top-left). Simple custom button to avoid pulling in
-        //    TopNavigationBigView (which has its own constraints/layout that
-        //    doesn't match our use-case cleanly).
-        let host = ForkEditFormHost(backAction: backAction, viewController: viewController)
-        forkAttachHost(to: viewController, host: host)
-
-        let backButton = UIButton(type: .system)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.setImage(UIImage(named: "menu_back"), for: .normal)
-        backButton.tintColor = .black
-        backButton.addTarget(host, action: #selector(ForkEditFormHost.backTapped), for: .touchUpInside)
-        view.addSubview(backButton)
+        // 2. (Back button removed — we rely on the system navigation bar
+        //     that the host UINavigationController already provides.)
 
         // 3. Title label.
         let titleLabel = UILabel()
@@ -150,11 +140,6 @@ public final class ForkEditFormBuilder {
 
         // Layout constraints for top + scroll + buttons
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            backButton.widthAnchor.constraint(equalToConstant: 34),
-            backButton.heightAnchor.constraint(equalToConstant: 44),
-
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
@@ -285,7 +270,13 @@ public final class ForkEditFormBuilder {
         }
 
         // 10. Tap anywhere to dismiss keyboard.
-        let tap = UITapGestureRecognizer(target: host, action: #selector(ForkEditFormHost.dismissKeyboard))
+        //     Use a small NSObject host so we don't have to add an @objc
+        //     instance method to the viewController (which would require
+        //     subclassing or runtime swizzling).
+        let dismissHost = ForkEditFormHost(backAction: backAction, viewController: viewController)
+        forkAttachHost(to: viewController, host: dismissHost)
+
+        let tap = UITapGestureRecognizer(target: dismissHost, action: #selector(ForkEditFormHost.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
 

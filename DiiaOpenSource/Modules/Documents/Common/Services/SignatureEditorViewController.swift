@@ -1,30 +1,40 @@
 import UIKit
+import Lottie
 
-/// FORK: a small finger-drawing canvas the user opens from the Passport edit form.
-/// Lets the user draw their signature on a black-on-white background, then
-/// "Save" persists it as PNG into `PassportStorage` and "Clear" wipes the canvas.
-///
-/// Includes a brush-thickness slider (1pt ... 8pt) above the canvas.
+/// FORK: signature editor in Diia style — animated gradient background,
+/// white rounded cards containing the canvas + brush slider, primary Save
+/// button at the bottom.
 final class SignatureEditorViewController: UIViewController {
 
     private let canvasView = SignatureCanvasView()
 
     private let hintLabel: UILabel = {
         let l = UILabel()
-        l.text = "Намалюйте підпис пальцем нижче"
-        l.font = .systemFont(ofSize: 14)
-        l.textColor = .darkGray
-        l.textAlignment = .center
+        l.text = "Намалюйте підпис пальцем у полі нижче"
+        l.font = .systemFont(ofSize: 14, weight: .regular)
+        l.textColor = UIColor(white: 0.40, alpha: 1.0)
+        l.textAlignment = .left
         l.numberOfLines = 0
+        l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
-    private let brushThicknessLabel: UILabel = {
+    private let brushCardTitle: UILabel = {
         let l = UILabel()
-        l.text = "Товщина кисті: 3"
-        l.font = .systemFont(ofSize: 14, weight: .medium)
+        l.text = "ТОВЩИНА КИСТІ"
+        l.font = .systemFont(ofSize: 11, weight: .semibold)
+        l.textColor = UIColor(white: 0.40, alpha: 1.0)
+        l.translatesAutoresizingMaskIntoConstraints = false
+        return l
+    }()
+
+    private let brushValueLabel: UILabel = {
+        let l = UILabel()
+        l.text = "3"
+        l.font = .systemFont(ofSize: 17, weight: .semibold)
         l.textColor = .black
-        l.textAlignment = .center
+        l.textAlignment = .right
+        l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
 
@@ -34,46 +44,31 @@ final class SignatureEditorViewController: UIViewController {
         s.maximumValue = 8
         s.value = 3
         s.isContinuous = true
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.minimumTrackTintColor = .black
         return s
     }()
 
-    private let clearButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.setTitle("Очистити", for: .normal)
-        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        b.layer.cornerRadius = 12
-        b.layer.borderWidth = 1
-        b.layer.borderColor = UIColor.lightGray.cgColor
+    private let clearButton: ForkFormButtonView = {
+        let b = ForkFormButtonView(title: "Очистити", style: .secondary, onTap: {})
         return b
     }()
 
-    private let saveButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.setTitle("Зберегти", for: .normal)
-        b.titleLabel?.font = .boldSystemFont(ofSize: 17)
-        b.backgroundColor = .black
-        b.setTitleColor(.white, for: .normal)
-        b.layer.cornerRadius = 12
-        return b
-    }()
-
-    private let cancelButton: UIButton = {
-        let b = UIButton(type: .system)
-        b.setTitle("Скасувати", for: .normal)
-        b.titleLabel?.font = .systemFont(ofSize: 16)
+    private let saveButton: ForkFormButtonView = {
+        let b = ForkFormButtonView(title: "Зберегти", style: .primary, onTap: {})
         return b
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Підпис"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
 
+        setupBackground()
         setupLayout()
 
-        clearButton.addTarget(self, action: #selector(clearTapped), for: .touchUpInside)
-        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
-        cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+        clearButton.onTap = { [weak self] in self?.clearTapped() }
+        saveButton.onTap = { [weak self] in self?.saveTapped() }
         brushSlider.addTarget(self, action: #selector(brushThicknessChanged(_:)), for: .valueChanged)
 
         // Apply initial brush thickness from slider default.
@@ -85,58 +80,136 @@ final class SignatureEditorViewController: UIViewController {
         }
     }
 
+    // MARK: - Background
+
+    private func setupBackground() {
+        let bg = LottieAnimationView(name: "background_gradient")
+        bg.contentMode = .scaleAspectFill
+        bg.loopMode = .loop
+        bg.backgroundBehavior = .pauseAndRestore
+        bg.translatesAutoresizingMaskIntoConstraints = false
+        bg.isUserInteractionEnabled = false
+        view.addSubview(bg)
+        view.sendSubviewToBack(bg)
+        NSLayoutConstraint.activate([
+            bg.topAnchor.constraint(equalTo: view.topAnchor),
+            bg.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bg.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bg.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+        bg.play()
+    }
+
+    // MARK: - Layout
+
     private func setupLayout() {
-        [hintLabel, brushThicknessLabel, brushSlider, canvasView,
-         clearButton, saveButton, cancelButton].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.keyboardDismissMode = .interactive
+        view.addSubview(scrollView)
+
+        let contentStack = UIStackView()
+        contentStack.axis = .vertical
+        contentStack.spacing = 12
+        contentStack.alignment = .fill
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentStack)
+
+        // Buttons pinned to bottom.
+        let buttonsStack = UIStackView()
+        buttonsStack.axis = .vertical
+        buttonsStack.spacing = 8
+        buttonsStack.alignment = .fill
+        buttonsStack.distribution = .fill
+        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(buttonsStack)
 
         NSLayoutConstraint.activate([
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: buttonsStack.topAnchor, constant: -8),
 
-            hintLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            hintLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            hintLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -16),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -16),
+            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
 
-            brushThicknessLabel.topAnchor.constraint(equalTo: hintLabel.bottomAnchor, constant: 16),
-            brushThicknessLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            brushThicknessLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-
-            brushSlider.topAnchor.constraint(equalTo: brushThicknessLabel.bottomAnchor, constant: 8),
-            brushSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            brushSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-
-            canvasView.topAnchor.constraint(equalTo: brushSlider.bottomAnchor, constant: 16),
-            canvasView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            canvasView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            canvasView.heightAnchor.constraint(equalTo: canvasView.widthAnchor, multiplier: 0.5),
-
-            clearButton.topAnchor.constraint(equalTo: canvasView.bottomAnchor, constant: 24),
-            clearButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            clearButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            clearButton.heightAnchor.constraint(equalToConstant: 44),
-
-            saveButton.topAnchor.constraint(equalTo: clearButton.bottomAnchor, constant: 12),
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            saveButton.heightAnchor.constraint(equalToConstant: 52),
+            buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
         ])
+
+        // Hint label
+        contentStack.addArrangedSubview(hintLabel)
+
+        // Card 1: Canvas
+        let canvasCard = makeCard()
+        canvasCard.addSubview(canvasView)
+        canvasView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            canvasView.topAnchor.constraint(equalTo: canvasCard.topAnchor, constant: 16),
+            canvasView.bottomAnchor.constraint(equalTo: canvasCard.bottomAnchor, constant: -16),
+            canvasView.leadingAnchor.constraint(equalTo: canvasCard.leadingAnchor, constant: 16),
+            canvasView.trailingAnchor.constraint(equalTo: canvasCard.trailingAnchor, constant: -16),
+            canvasView.heightAnchor.constraint(equalTo: canvasView.widthAnchor, multiplier: 0.5),
+        ])
+        contentStack.addArrangedSubview(canvasCard)
+
+        // Card 2: Brush thickness slider
+        let brushCard = makeCard()
+        brushCard.addSubview(brushCardTitle)
+        brushCard.addSubview(brushValueLabel)
+        brushCard.addSubview(brushSlider)
+        NSLayoutConstraint.activate([
+            brushCardTitle.topAnchor.constraint(equalTo: brushCard.topAnchor, constant: 16),
+            brushCardTitle.leadingAnchor.constraint(equalTo: brushCard.leadingAnchor, constant: 16),
+
+            brushValueLabel.centerYAnchor.constraint(equalTo: brushCardTitle.centerYAnchor),
+            brushValueLabel.trailingAnchor.constraint(equalTo: brushCard.trailingAnchor, constant: -16),
+
+            brushSlider.topAnchor.constraint(equalTo: brushCardTitle.bottomAnchor, constant: 12),
+            brushSlider.leadingAnchor.constraint(equalTo: brushCard.leadingAnchor, constant: 16),
+            brushSlider.trailingAnchor.constraint(equalTo: brushCard.trailingAnchor, constant: -16),
+            brushSlider.bottomAnchor.constraint(equalTo: brushCard.bottomAnchor, constant: -16),
+        ])
+        contentStack.addArrangedSubview(brushCard)
+
+        // Bottom buttons
+        buttonsStack.addArrangedSubview(saveButton)
+        buttonsStack.addArrangedSubview(clearButton)
     }
+
+    private func makeCard() -> UIView {
+        let card = UIView()
+        card.translatesAutoresizingMaskIntoConstraints = false
+        card.backgroundColor = .white
+        card.layer.cornerRadius = 16
+        card.layer.masksToBounds = false
+        card.layer.shadowColor = UIColor.black.cgColor
+        card.layer.shadowOpacity = 0.05
+        card.layer.shadowOffset = CGSize(width: 0, height: 2)
+        card.layer.shadowRadius = 8
+        return card
+    }
+
+    // MARK: - Actions
 
     @objc private func brushThicknessChanged(_ slider: UISlider) {
         let value = Int(slider.value.rounded())
-        brushThicknessLabel.text = "Товщина кисті: \(value)"
+        brushValueLabel.text = "\(value)"
         canvasView.brushWidth = CGFloat(slider.value)
         canvasView.setNeedsDisplay()
     }
 
-    @objc private func clearTapped() {
+    private func clearTapped() {
         canvasView.clear()
     }
 
-    @objc private func saveTapped() {
+    private func saveTapped() {
         guard let image = canvasView.renderedImage() else {
             let alert = UIAlertController(title: "Підпис порожній",
                                           message: "Намалюйте підпис перед збереженням.",
@@ -147,10 +220,6 @@ final class SignatureEditorViewController: UIViewController {
         }
         PassportStorage.shared.saveSignature(image)
         PassportSeeder.sync()
-        navigationController?.popViewController(animated: true)
-    }
-
-    @objc private func cancelTapped() {
         navigationController?.popViewController(animated: true)
     }
 }
@@ -171,10 +240,11 @@ private final class SignatureCanvasView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
-        layer.cornerRadius = 8
+        backgroundColor = UIColor(white: 0.96, alpha: 1.0)  // very light gray so it's distinct from the white card
+        layer.cornerRadius = 12
         layer.borderWidth = 1
-        layer.borderColor = UIColor.lightGray.cgColor
+        layer.borderColor = UIColor.black.withAlphaComponent(0.08).cgColor
+        layer.masksToBounds = true
         isMultipleTouchEnabled = false
     }
 
@@ -195,28 +265,15 @@ private final class SignatureCanvasView: UIView {
     }
 
     /// Renders the canvas to a UIImage — WHITE background, black strokes.
-    ///
-    /// Why white instead of transparent?
-    ///   DSTableItemVerticalView.configure() calls
-    ///   `image.imageByMakingWhiteBackgroundTransparent()` on the signature
-    ///   image before scaling it. That function uses
-    ///   `copy(maskingColorComponents: [200,255,200,255,200,255])` which
-    ///   knocks out white-ish pixels but LEAVES already-transparent pixels
-    ///   alone. If we render with a transparent background, the masking pass
-    ///   is essentially a no-op AND the resulting image keeps its alpha
-    ///   channel — which for some reason makes the UIImageView in
-    ///   DSTableItemVerticalView render nothing visible.
-    ///   Rendering with a white background and letting Diia's masking pass
-    ///   make that white transparent matches the original Diia flow
-    ///   (their backend returns signature JPEGs with white backgrounds).
+    /// (Diia's DSTableItemVerticalView calls imageByMakingWhiteBackgroundTransparent()
+    /// which knocks out white pixels; keeping the white bg here is what makes
+    /// the signature actually render on the document card.)
     func renderedImage() -> UIImage? {
         let size = bounds.size
         guard size.width > 0, size.height > 0 else { return nil }
 
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { ctx in
-            // White background — Diia's imageByMakingWhiteBackgroundTransparent()
-            // will strip this in DSTableItemVerticalView.
             UIColor.white.setFill()
             ctx.fill(CGRect(origin: .zero, size: size))
 
@@ -242,6 +299,9 @@ private final class SignatureCanvasView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
+        backgroundColor?.setFill()
+        UIRectFill(rect)
+
         backgroundImage?.draw(in: rect)
 
         UIColor.black.setStroke()
