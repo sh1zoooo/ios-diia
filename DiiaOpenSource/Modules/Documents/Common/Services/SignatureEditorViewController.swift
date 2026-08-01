@@ -80,19 +80,10 @@ final class SignatureEditorViewController: UIViewController {
             canvasView.loadExistingImage(existing)
         }
 
-        // FORK: fix for "swipes on the canvas get eaten by page navigation".
-        // NOTE: an earlier attempt reassigned navigationController's
-        // interactivePopGestureRecognizer.delegate to self — that crashed the
-        // app, because that gesture recognizer's delegate is also relied on
-        // internally by UINavigationController's own transition machinery;
-        // replacing it outright is not safe. Fixed with the standard, safe
-        // pattern instead: just toggle .isEnabled while this screen is
-        // visible (see viewWillAppear/viewWillDisappear below), and lock the
-        // scrollView specifically while a finger is actually drawing on the
-        // canvas (see canvasView.onDrawingStateChanged below).
-        canvasView.onDrawingStateChanged = { [weak self] isDrawing in
-            self?.scrollView.isScrollEnabled = !isDrawing
-        }
+        // FORK: per feedback, the page should simply never scroll/page at all
+        // on this screen — no dynamic toggling, just off, period. The form
+        // (canvas + brush card) fits on one screen anyway.
+        scrollView.isScrollEnabled = false
     }
 
     override func viewWillAppear(_ animated: Bool) {

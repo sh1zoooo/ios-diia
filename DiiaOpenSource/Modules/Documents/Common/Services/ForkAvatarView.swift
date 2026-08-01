@@ -49,10 +49,12 @@ public final class ForkAvatarView: UIView {
 
     private let badgeButton: UIButton = {
         let b = UIButton(type: .system)
-        b.backgroundColor = .black
-        b.tintColor = .white
+        b.backgroundColor = .white
+        b.tintColor = .black
         b.clipsToBounds = true
-        b.setImage(UIImage(systemName: "camera.fill"), for: .normal)
+        b.layer.borderWidth = 1
+        b.layer.borderColor = UIColor.black.withAlphaComponent(0.15).cgColor
+        b.setImage(UIImage(systemName: "plus"), for: .normal)
         b.translatesAutoresizingMaskIntoConstraints = false
         return b
     }()
