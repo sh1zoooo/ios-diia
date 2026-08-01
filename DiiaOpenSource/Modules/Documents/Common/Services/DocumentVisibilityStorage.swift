@@ -67,4 +67,20 @@ final class DocumentVisibilityStorage {
     private func keyFor(_ kind: DocKind) -> String {
         "fork.docVisibility.\(kind.rawValue)"
     }
+
+    // MARK: - QR-tap-opens-link toggle
+    //
+    // The offline QR back-view (see ForkQRBackView) encodes a fixed URL and
+    // opens it in the browser on tap. Some people don't want that — this flag
+    // lets Settings turn the tap-to-open behavior off without removing the
+    // QR code itself (the QR still displays, it just won't react to taps).
+    private let qrTapEnabledKey = "fork.qrBackView.tapOpensLink"
+
+    var isQRTapToOpenEnabled: Bool {
+        get {
+            if defaults.object(forKey: qrTapEnabledKey) == nil { return true }
+            return defaults.bool(forKey: qrTapEnabledKey)
+        }
+        set { defaults.set(newValue, forKey: qrTapEnabledKey) }
+    }
 }

@@ -137,6 +137,7 @@ final class ForkQRBackView: UIView, FlippableEmbeddedView {
     }
 
     @objc private func qrTapped() {
+        guard DocumentVisibilityStorage.shared.isQRTapToOpenEnabled else { return }
         guard let url = URL(string: qrURLString) else { return }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }

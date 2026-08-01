@@ -49,8 +49,11 @@ public final class ForkAvatarView: UIView {
 
     private var viewModel: ViewModel
 
+    private var diameter: CGFloat = 100
+
     public init(viewModel: ViewModel, diameter: CGFloat = 100) {
         self.viewModel = viewModel
+        self.diameter = diameter
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setupSubviews(diameter: diameter)
@@ -64,6 +67,21 @@ public final class ForkAvatarView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // FORK: re-assert circular masking from *actual* runtime bounds every
+    // layout pass, instead of relying solely on the fixed `diameter` value
+    // computed once at init. This is a defensive fix for the avatar
+    // appearing as a rounded rectangle instead of a circle — if Auto Layout
+    // ever resolves a size that isn't exactly square (e.g. because a parent
+    // stack view stretches it before constraints fully settle), the
+    // cornerRadius now always matches whatever the view's real size is.
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.width / 2
+        imageView.layer.cornerRadius = bounds.width / 2
+        imageView.layer.masksToBounds = true
+        badgeButton.layer.cornerRadius = badgeButton.bounds.width / 2
     }
 
     private func setupSubviews(diameter: CGFloat) {
@@ -90,11 +108,15 @@ public final class ForkAvatarView: UIView {
             placeholderLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             placeholderLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            // Camera badge: 36×36 circle, bottom-right corner, slightly outside.
+            // Camera badge: 36×36 circle, bottom-right corner.
+            // FORK: kept fully INSIDE bounds (not overhanging past the edge) —
+            // the container has clipsToBounds = true for the circular mask,
+            // so a badge positioned outside those bounds would get its edges
+            // clipped/cut off, which is part of what made this look wrong.
             badgeButton.widthAnchor.constraint(equalToConstant: 36),
             badgeButton.heightAnchor.constraint(equalToConstant: 36),
-            badgeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 4),
-            badgeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 4),
+            badgeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2),
+            badgeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
         ])
     }
 

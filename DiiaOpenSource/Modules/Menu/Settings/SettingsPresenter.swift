@@ -80,6 +80,16 @@ final class SettingsPresenter: SettingsAction {
         ))
 
         // --- Інші -----------------------------------------------------------------
+        settings.append(
+            .switched(vm: SwitchIconedViewModel(
+                title: "Відкривати посилання по тапу на QR",
+                iconName: R.image.orderIcon.name,
+                isOn: DocumentVisibilityStorage.shared.isQRTapToOpenEnabled,
+                onSwitch: { isOn in
+                    DocumentVisibilityStorage.shared.isQRTapToOpenEnabled = isOn
+                }
+            ))
+        )
         settings.append(.titled(
             vm: TitleCellViewModel(
                 title: R.Strings.settings_docs_order.localized(),

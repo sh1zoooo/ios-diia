@@ -7,6 +7,7 @@ import Lottie
 final class SignatureEditorViewController: UIViewController {
 
     private let canvasView = SignatureCanvasView()
+    private let scrollView = UIScrollView()
 
     private let hintLabel: UILabel = {
         let l = UILabel()
@@ -78,6 +79,36 @@ final class SignatureEditorViewController: UIViewController {
         if let existing = PassportStorage.shared.signatureImage {
             canvasView.loadExistingImage(existing)
         }
+
+        // FORK: fix for "swipes on the canvas get eaten by page navigation".
+        // Two competing gesture recognizers were stealing touches meant for
+        // drawing: (1) the system edge-swipe-to-go-back gesture on the
+        // navigation controller, and (2) this screen's own vertical scrollView.
+        // Both get a look at every touch regardless of which view is hit-tested
+        // underneath, so drawing on the canvas could get interpreted as
+        // "swipe back" or "scroll the form" instead of a stroke.
+        // Fix: make both gesture recognizers ask us first via their delegate,
+        // and refuse them whenever the touch starts inside the canvas.
+        scrollView.panGestureRecognizer.delegate = self
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+
+    // Restore the original interactive-pop-gesture delegate when leaving,
+    // so other screens in the app keep working normally (this delegate is
+    // shared across the whole UINavigationController, not per-screen).
+    private weak var previousPopGestureDelegate: UIGestureRecognizerDelegate?
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if previousPopGestureDelegate == nil {
+            previousPopGestureDelegate = navigationController?.interactivePopGestureRecognizer?.delegate
+        }
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.interactivePopGestureRecognizer?.delegate = previousPopGestureDelegate
     }
 
     // MARK: - Background
@@ -103,7 +134,6 @@ final class SignatureEditorViewController: UIViewController {
     // MARK: - Layout
 
     private func setupLayout() {
-        let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
         scrollView.showsVerticalScrollIndicator = false
@@ -221,6 +251,24 @@ final class SignatureEditorViewController: UIViewController {
         PassportStorage.shared.saveSignature(image)
         PassportSeeder.sync()
         navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension SignatureEditorViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // If the touch starts inside the signature canvas, refuse it for the
+        // scroll view's pan gesture AND the system's edge-swipe-to-go-back
+        // gesture — both would otherwise compete with drawing.
+        if touch.view?.isDescendant(of: canvasView) == true {
+            return false
+        }
+        return true
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 
