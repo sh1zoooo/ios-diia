@@ -47,9 +47,19 @@ enum BirthCertificateSeeder {
             value: "\(unit) • "
         )
 
+        // Bottom heading exactly like the real reference: SURNAME / NAME /
+        // PATRONYMIC each on its own line, all uppercase (same treatment as
+        // the passport's bottom heading — see PassportSeeder for the same pattern).
+        let nameLines = [f.surname, f.firstName, f.middleName]
+            .map { $0.uppercased() }
+            .filter { !$0.isEmpty }
+        let bottomValue = nameLines.isEmpty
+            ? BirthCertificateStorage.shared.fullName.uppercased()
+            : nameLines.joined(separator: "\n")
+
         let bottomHeading = DSDocumentHeading(
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
-                value: BirthCertificateStorage.shared.fullName,
+                value: bottomValue,
                 subtitles: nil
             )
         )

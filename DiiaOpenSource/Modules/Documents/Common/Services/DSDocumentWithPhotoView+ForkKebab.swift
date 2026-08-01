@@ -31,6 +31,7 @@ private var forkKebabKey: UInt8 = 0
 private var forkKebabHandlerKey: UInt8 = 0
 private var forkBottomHeadingEnlargedKey: UInt8 = 0
 private var forkKebabBoundsObserverKey: UInt8 = 0
+private var forkPhotoBoxHiddenKey: UInt8 = 0
 
 extension DSDocumentWithPhotoView {
 
@@ -47,7 +48,16 @@ extension DSDocumentWithPhotoView {
     /// Call this on a freshly-created DSDocumentWithPhotoView instance to
     /// install the kebab overlay once the view gets a non-zero frame.
     /// Safe to call multiple times — only the first call installs the observer.
-    func forkHookOnFirstLayout() {
+    ///
+    /// - Parameter hidePhotoBox: pass `true` for document types that never have
+    ///   a photo (e.g. birth certificate). `DSTableBlockTwoColumnsPlaneOrgView`
+    ///   ALWAYS adds an empty `DSDocPhotoView` placeholder whenever an
+    ///   `imageProvider` is supplied — regardless of whether `models.photo` is
+    ///   nil — because the check is `if let imageProvider`, not
+    ///   `if let models.photo`. Since we always pass a non-nil resolver, the
+    ///   only way to remove the empty box is to find and detach the view
+    ///   after layout.
+    func forkHookOnFirstLayout(hidePhotoBox: Bool = false) {
         if objc_getAssociatedObject(self, &forkKebabBoundsObserverKey) != nil {
             return
         }
@@ -56,6 +66,7 @@ extension DSDocumentWithPhotoView {
         if bounds.width > 0 && bounds.height > 0 {
             forkEnsureKebabButton()
             forkEnlargeBottomHeadingFonts()
+            if hidePhotoBox { forkHidePhotoBoxIfNeeded() }
             return
         }
 
@@ -68,6 +79,7 @@ extension DSDocumentWithPhotoView {
                 guard let self = self else { return }
                 self.forkEnsureKebabButton()
                 self.forkEnlargeBottomHeadingFonts()
+                if hidePhotoBox { self.forkHidePhotoBoxIfNeeded() }
             }
             // Stop observing after the first valid layout.
             if let token = objc_getAssociatedObject(self, &forkKebabBoundsObserverKey) as? NSKeyValueObservation {
@@ -76,6 +88,19 @@ extension DSDocumentWithPhotoView {
             }
         }
         objc_setAssociatedObject(self, &forkKebabBoundsObserverKey, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+
+    /// Removes the empty photo placeholder box from the two-column block, so
+    /// the field list expands to the full card width — matching the real
+    /// birth-certificate card, which has no photo at all.
+    private func forkHidePhotoBoxIfNeeded() {
+        if objc_getAssociatedObject(self, &forkPhotoBoxHiddenKey) as? Bool == true {
+            return
+        }
+        for case let photoView as DSDocPhotoView in subviewsRecursive() {
+            photoView.removeFromSuperview()
+        }
+        objc_setAssociatedObject(self, &forkPhotoBoxHiddenKey, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     private func forkEnsureKebabButton() {

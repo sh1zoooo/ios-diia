@@ -75,7 +75,7 @@ class DocumentsProcessor {
             // The frontView is lazy, so accessing it here forces its creation —
             // which is fine, it would happen anyway when the Documents tab renders.
             if let dsView = vm.frontView as? DSDocumentWithPhotoView {
-                dsView.forkHookOnFirstLayout()
+                dsView.forkHookOnFirstLayout(hidePhotoBox: docType == .birthCertificate)
             }
             return ForkDocumentViewModelWrapper(wrapped: vm, docType: docType)
         } ?? []
