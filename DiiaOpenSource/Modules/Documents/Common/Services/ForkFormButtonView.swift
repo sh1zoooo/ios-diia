@@ -23,7 +23,10 @@ public final class ForkFormButtonView: UIControl {
     }()
 
     private let style: Style
-    private let onTap: () -> Void
+    /// Public so callers (e.g. SignatureEditorViewController) can swap the
+    /// tap handler after creating the button via the convenience initializers
+    /// in the form builder.
+    public var onTap: () -> Void
 
     public init(title: String, style: Style, onTap: @escaping () -> Void) {
         self.style = style
