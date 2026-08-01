@@ -81,34 +81,31 @@ final class SignatureEditorViewController: UIViewController {
         }
 
         // FORK: fix for "swipes on the canvas get eaten by page navigation".
-        // Two competing gesture recognizers were stealing touches meant for
-        // drawing: (1) the system edge-swipe-to-go-back gesture on the
-        // navigation controller, and (2) this screen's own vertical scrollView.
-        // Both get a look at every touch regardless of which view is hit-tested
-        // underneath, so drawing on the canvas could get interpreted as
-        // "swipe back" or "scroll the form" instead of a stroke.
-        // Fix: make both gesture recognizers ask us first via their delegate,
-        // and refuse them whenever the touch starts inside the canvas.
-        scrollView.panGestureRecognizer.delegate = self
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
+        // NOTE: an earlier attempt reassigned navigationController's
+        // interactivePopGestureRecognizer.delegate to self — that crashed the
+        // app, because that gesture recognizer's delegate is also relied on
+        // internally by UINavigationController's own transition machinery;
+        // replacing it outright is not safe. Fixed with the standard, safe
+        // pattern instead: just toggle .isEnabled while this screen is
+        // visible (see viewWillAppear/viewWillDisappear below), and lock the
+        // scrollView specifically while a finger is actually drawing on the
+        // canvas (see canvasView.onDrawingStateChanged below).
+        canvasView.onDrawingStateChanged = { [weak self] isDrawing in
+            self?.scrollView.isScrollEnabled = !isDrawing
+        }
     }
-
-    // Restore the original interactive-pop-gesture delegate when leaving,
-    // so other screens in the app keep working normally (this delegate is
-    // shared across the whole UINavigationController, not per-screen).
-    private weak var previousPopGestureDelegate: UIGestureRecognizerDelegate?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if previousPopGestureDelegate == nil {
-            previousPopGestureDelegate = navigationController?.interactivePopGestureRecognizer?.delegate
-        }
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
+        // Disabling (not reassigning the delegate of) the system edge-swipe-
+        // to-go-back gesture is the safe way to stop it stealing touches
+        // meant for drawing near the left edge of the canvas.
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.interactivePopGestureRecognizer?.delegate = previousPopGestureDelegate
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     // MARK: - Background
@@ -254,24 +251,6 @@ final class SignatureEditorViewController: UIViewController {
     }
 }
 
-// MARK: - UIGestureRecognizerDelegate
-
-extension SignatureEditorViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // If the touch starts inside the signature canvas, refuse it for the
-        // scroll view's pan gesture AND the system's edge-swipe-to-go-back
-        // gesture — both would otherwise compete with drawing.
-        if touch.view?.isDescendant(of: canvasView) == true {
-            return false
-        }
-        return true
-    }
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}
-
 // MARK: - SignatureCanvasView
 
 private final class SignatureCanvasView: UIView {
@@ -285,6 +264,11 @@ private final class SignatureCanvasView: UIView {
 
     /// Brush thickness in points (1...8). Updated live from the slider.
     var brushWidth: CGFloat = 3
+
+    /// FORK: fires true when a finger touches down on the canvas, false when
+    /// it lifts. The owning view controller uses this to lock its scrollView
+    /// for the duration of a stroke, so a drag doesn't get read as "scroll".
+    var onDrawingStateChanged: ((Bool) -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -372,6 +356,7 @@ private final class SignatureCanvasView: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let pt = touches.first?.location(in: self) else { return }
+        onDrawingStateChanged?(true)
         currentStroke = [pt]
         setNeedsDisplay()
     }
@@ -383,6 +368,7 @@ private final class SignatureCanvasView: UIView {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        onDrawingStateChanged?(false)
         if !currentStroke.isEmpty {
             strokes.append(currentStroke)
             currentStroke.removeAll()
@@ -391,6 +377,7 @@ private final class SignatureCanvasView: UIView {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        onDrawingStateChanged?(false)
         currentStroke.removeAll()
         setNeedsDisplay()
     }
